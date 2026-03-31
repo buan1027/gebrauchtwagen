@@ -1,0 +1,7 @@
+[server]
+host = "127.0.0.1"
+port = 8443
+
+[tls]
+certfile = "src/gebrauchtwagen/config/resources/tls/certificate.pem"
+keyfile = "src/gebrauchtwagen/config/resources/tls/key.pem"

@@ -5,3 +5,6 @@ __pycache__/
 .coverage
 htmlcov/
 *.pyc
+src/gebrauchtwagen/config/resources/tls/*.pem
+src/gebrauchtwagen/config/resources/tls/*.crt
+src/gebrauchtwagen/config/resources/tls/*.key
