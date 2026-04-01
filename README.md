@@ -1,6 +1,6 @@
 # gebrauchtwagen
 
-Ein FastAPI-Projekt fuer eine Gebrauchtwagen-Anwendung.
+Ein FastAPI-Projekt für eine Gebrauchtwagen-Anwendung.
 
 ## Voraussetzungen
 
@@ -17,7 +17,7 @@ uv run gebrauchtwagen
 
 ## Browser
 
-Im Browser kannst du danach `https://127.0.0.1:8443` und
+Im Browser kannst man danach `https://127.0.0.1:8443` und
 `https://127.0.0.1:8443/health` aufrufen.
 
 ## Tests
@@ -38,4 +38,4 @@ Erwartete Dateinamen:
 - `key.pem`
 
 Solange diese Dateien fehlen, kann der HTTPS-Start noch nicht funktionieren.
-Die Pfade dafuer stehen in `src/gebrauchtwagen/config/application.toml`.
+Die Pfade dafür stehen in `src/gebrauchtwagen/config/application.toml`.
