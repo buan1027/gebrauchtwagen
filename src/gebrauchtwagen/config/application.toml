@@ -5,3 +5,7 @@ port = 8443
 [tls]
 certfile = "src/gebrauchtwagen/config/resources/tls/certificate.pem"
 keyfile = "src/gebrauchtwagen/config/resources/tls/key.pem"
+
+[db]
+url = "sqlite:///gebrauchtwagen.db"
+echo = false

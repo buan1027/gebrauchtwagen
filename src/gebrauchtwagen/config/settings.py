@@ -20,9 +20,16 @@ class TlsSettings:
 
 
 @dataclass(slots=True)
+class DbSettings:
+    url: str
+    echo: bool
+
+
+@dataclass(slots=True)
 class Settings:
     server: ServerSettings
     tls: TlsSettings
+    db: DbSettings
 
 
 def load_settings() -> Settings:
@@ -37,5 +44,9 @@ def load_settings() -> Settings:
         tls=TlsSettings(
             certfile=Path(data["tls"]["certfile"]),
             keyfile=Path(data["tls"]["keyfile"]),
+        ),
+        db=DbSettings(
+            url=data["db"]["url"],
+            echo=data["db"]["echo"],
         ),
     )
