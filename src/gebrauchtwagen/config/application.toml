@@ -7,5 +7,9 @@ certfile = "src/gebrauchtwagen/config/resources/tls/certificate.pem"
 keyfile = "src/gebrauchtwagen/config/resources/tls/key.pem"
 
 [db]
-url = "sqlite:///gebrauchtwagen.db"
+host = "127.0.0.1"
+port = 5432
+name = "gebrauchtwagen"
+username = "gebrauchtwagen"
+password = "gebrauchtwagen"
 echo = false

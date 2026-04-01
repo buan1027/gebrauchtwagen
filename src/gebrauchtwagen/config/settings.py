@@ -21,7 +21,11 @@ class TlsSettings:
 
 @dataclass(slots=True)
 class DbSettings:
-    url: str
+    host: str
+    port: int
+    name: str
+    username: str
+    password: str
     echo: bool
 
 
@@ -46,7 +50,11 @@ def load_settings() -> Settings:
             keyfile=Path(data["tls"]["keyfile"]),
         ),
         db=DbSettings(
-            url=data["db"]["url"],
+            host=data["db"]["host"],
+            port=data["db"]["port"],
+            name=data["db"]["name"],
+            username=data["db"]["username"],
+            password=data["db"]["password"],
             echo=data["db"]["echo"],
         ),
     )

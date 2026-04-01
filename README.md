@@ -1,6 +1,6 @@
 # gebrauchtwagen
 
-Ein FastAPI-Projekt für eine Gebrauchtwagen-Anwendung.
+Ein FastAPI-Projekt fuer eine Gebrauchtwagen-Anwendung.
 
 ## Voraussetzungen
 
@@ -11,13 +11,14 @@ Ein FastAPI-Projekt für eine Gebrauchtwagen-Anwendung.
 ## Start
 
 ```powershell
+docker compose up -d db
 uv sync
 uv run gebrauchtwagen
 ```
 
 ## Browser
 
-Im Browser kannst man danach `https://127.0.0.1:8443` und
+Im Browser kannst du danach `https://127.0.0.1:8443` und
 `https://127.0.0.1:8443/health` aufrufen.
 
 ## Tests
@@ -38,4 +39,15 @@ Erwartete Dateinamen:
 - `key.pem`
 
 Solange diese Dateien fehlen, kann der HTTPS-Start noch nicht funktionieren.
-Die Pfade dafür stehen in `src/gebrauchtwagen/config/application.toml`.
+Die Pfade dafuer stehen in `src/gebrauchtwagen/config/application.toml`.
+
+## Lokale Datenbank
+
+Die Anwendung erwartet lokal eine PostgreSQL-Datenbank mit den Werten aus
+`src/gebrauchtwagen/config/application.toml`.
+
+Starten kannst du sie mit:
+
+```powershell
+docker compose up -d db
+```
