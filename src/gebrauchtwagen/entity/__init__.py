@@ -1,13 +1,5 @@
-from .base import Base
-from .gebrauchtwagen import Gebrauchtwagen
-from .schaden import Schaden
-from .standort import Standort
-from .hauptuntersuchung import Hauptuntersuchung
+"""Entity-Klassen für die Domäne gebrauchtwagen."""
 
-__all__ = [
-    "Base",
-    "Gebrauchtwagen",
-    "Schaden",
-    "Standort",
-    "Hauptuntersuchung",
-]
+from .base import Base
+
+__all__ = ["Base"]

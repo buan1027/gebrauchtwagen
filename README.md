@@ -11,6 +11,7 @@ Ein FastAPI-Projekt fuer eine Gebrauchtwagen-Anwendung.
 ## Start
 
 ```powershell
+docker compose up -d db
 uv sync
 uv run gebrauchtwagen
 ```
@@ -39,3 +40,14 @@ Erwartete Dateinamen:
 
 Solange diese Dateien fehlen, kann der HTTPS-Start noch nicht funktionieren.
 Die Pfade dafuer stehen in `src/gebrauchtwagen/config/application.toml`.
+
+## Lokale Datenbank
+
+Die Anwendung erwartet lokal eine PostgreSQL-Datenbank mit den Werten aus
+`src/gebrauchtwagen/config/application.toml`.
+
+Starten kannst du sie mit:
+
+```powershell
+docker compose up -d db
+```
