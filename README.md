@@ -27,6 +27,9 @@ Im Browser kannst du danach `https://127.0.0.1:8443` und
 uv run pytest
 ```
 
+Weitere kurze Team-Dokumentation liegt unter `docs/`, zum Beispiel zu Git,
+lokalem Setup, Tests und Troubleshooting.
+
 ## Lokales TLS
 
 Die Zertifikatsdateien werden bewusst **nicht** ins Repository eingecheckt.
