@@ -11,42 +11,45 @@ def reset_store(monkeypatch):
 
 def test_create_gebrauchtwagen_returns_response_dto(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
 
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
             json={
+                "fin": "WVWZZZ1JZXW000001",
                 "marke": "Audi",
                 "modell": "A3",
                 "baujahr": 2021,
                 "kilometerstand": 25000,
-                "preis_eur": "21999.90",
             },
         )
 
     assert response.status_code == 201
     assert response.json() == {
         "id": 1,
+        "version": 1,
+        "fin": "WVWZZZ1JZXW000001",
         "marke": "Audi",
         "modell": "A3",
         "baujahr": 2021,
         "kilometerstand": 25000,
-        "preis_eur": "21999.90",
     }
 
 
 def test_create_gebrauchtwagen_rejects_invalid_payload(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
 
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
             json={
+                "fin": "",
                 "marke": "  ",
                 "modell": "A3",
                 "baujahr": 1800,
                 "kilometerstand": -10,
-                "preis_eur": "0",
             },
         )
 
@@ -55,11 +58,12 @@ def test_create_gebrauchtwagen_rejects_invalid_payload(monkeypatch) -> None:
     errors = response.json()["detail"]
     error_fields = {".".join(str(part) for part in error["loc"][1:]) for error in errors}
 
-    assert {"marke", "baujahr", "kilometerstand", "preis_eur"}.issubset(error_fields)
+    assert {"fin", "marke", "baujahr", "kilometerstand"}.issubset(error_fields)
 
 
 def test_get_gebrauchtwagen_returns_empty_list_for_empty_database(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
 
     with TestClient(app) as client:
         response = client.get("/gebrauchtwagen")
@@ -70,16 +74,17 @@ def test_get_gebrauchtwagen_returns_empty_list_for_empty_database(monkeypatch) -
 
 def test_get_gebrauchtwagen_returns_serialized_list(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
 
     with TestClient(app) as client:
         create_response = client.post(
             "/gebrauchtwagen",
             json={
+                "fin": "WVWZZZ1JZXW000001",
                 "marke": "Audi",
                 "modell": "A3",
                 "baujahr": 2021,
                 "kilometerstand": 25000,
-                "preis_eur": "21999.90",
             },
         )
 
@@ -90,17 +95,19 @@ def test_get_gebrauchtwagen_returns_serialized_list(monkeypatch) -> None:
     assert list_response.json() == [
         {
             "id": 1,
+            "version": 1,
+            "fin": "WVWZZZ1JZXW000001",
             "marke": "Audi",
             "modell": "A3",
             "baujahr": 2021,
             "kilometerstand": 25000,
-            "preis_eur": "21999.90",
         }
     ]
 
 
 def test_health_reports_connected_database(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
     monkeypatch.setattr("gebrauchtwagen.main.is_database_connected", lambda: True)
 
     with TestClient(app) as client:
@@ -112,6 +119,7 @@ def test_health_reports_connected_database(monkeypatch) -> None:
 
 def test_health_reports_disconnected_database(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
     monkeypatch.setattr("gebrauchtwagen.main.is_database_connected", lambda: False)
 
     with TestClient(app) as client:

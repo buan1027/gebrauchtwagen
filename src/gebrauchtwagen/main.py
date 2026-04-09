@@ -1,6 +1,10 @@
 from fastapi import FastAPI, status
 
-from gebrauchtwagen.config.db import check_database_connection, is_database_connected
+from gebrauchtwagen.config.db import (
+    check_database_connection,
+    create_tables,
+    is_database_connected,
+)
 from gebrauchtwagen.entity.dto import (
     GebrauchtwagenRequestDTO,
     GebrauchtwagenResponseDTO,
@@ -13,6 +17,7 @@ _gebrauchtwagen_store: list[GebrauchtwagenResponseDTO] = []
 @app.on_event("startup")
 def startup() -> None:
     check_database_connection()
+    create_tables()
 
 
 @app.get("/")
@@ -43,6 +48,7 @@ def create_gebrauchtwagen(
 ) -> GebrauchtwagenResponseDTO:
     created = GebrauchtwagenResponseDTO(
         id=len(_gebrauchtwagen_store) + 1,
+        version=1,
         **request.model_dump(),
     )
     _gebrauchtwagen_store.append(created)

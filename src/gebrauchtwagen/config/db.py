@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
-from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session, sessionmaker
 
 from gebrauchtwagen.config.settings import load_settings
+from gebrauchtwagen.entity import Base
+import gebrauchtwagen.entity.gebrauchtwagen  # noqa: F401
 
 settings = load_settings()
 
@@ -36,6 +38,11 @@ SessionFactory = sessionmaker(
 def get_session() -> Session:
     """Erzeuge eine Datenbank-Session."""
     return SessionFactory()
+
+
+def create_tables() -> None:
+    """Erzeuge alle registrierten Tabellen."""
+    Base.metadata.create_all(bind=engine)
 
 
 def check_database_connection() -> None:
