@@ -1,23 +1,58 @@
-from fastapi import FastAPI, status
+from contextlib import asynccontextmanager
+from typing import Final
+
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import Response
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from gebrauchtwagen.config.db import (
     check_database_connection,
     create_tables,
+    engine,
     is_database_connected,
 )
 from gebrauchtwagen.entity.dto import (
     GebrauchtwagenRequestDTO,
     GebrauchtwagenResponseDTO,
 )
+from gebrauchtwagen.problem_details import create_problem_details
 
-app = FastAPI(title="gebrauchtwagen")
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    """Beim Start DB pruefen und Tabellen erzeugen, beim Ende Engine freigeben."""
+    check_database_connection()
+    create_tables()
+    yield
+    engine.dispose()
+
+
+app: Final = FastAPI(title="gebrauchtwagen", lifespan=lifespan)
 _gebrauchtwagen_store: list[GebrauchtwagenResponseDTO] = []
 
 
-@app.on_event("startup")
-def startup() -> None:
-    check_database_connection()
-    create_tables()
+@app.exception_handler(StarletteHTTPException)
+def http_exception_handler(_request: Request, err: StarletteHTTPException) -> Response:
+    """Einheitliche Fehlerantwort fuer HTTP-Fehler."""
+    if err.status_code == status.HTTP_404_NOT_FOUND:
+        return create_problem_details(
+            status_code=err.status_code,
+            detail=f"Der Pfad wurde nicht gefunden: {_request.url.path}",
+        )
+    return create_problem_details(status_code=err.status_code, detail=err.detail)
+
+
+@app.exception_handler(RequestValidationError)
+def validation_exception_handler(
+    _request: Request,
+    err: RequestValidationError,
+) -> Response:
+    """Einheitliche Fehlerantwort fuer Validierungsfehler."""
+    return create_problem_details(
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        detail=err.errors(),
+    )
 
 
 @app.get("/")

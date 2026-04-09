@@ -40,6 +40,7 @@ def test_create_gebrauchtwagen_returns_response_dto(monkeypatch) -> None:
 def test_create_gebrauchtwagen_rejects_invalid_payload(monkeypatch) -> None:
     monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
     monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.engine.dispose", lambda: None)
 
     with TestClient(app) as client:
         response = client.post(
@@ -54,11 +55,30 @@ def test_create_gebrauchtwagen_rejects_invalid_payload(monkeypatch) -> None:
         )
 
     assert response.status_code == 422
-
-    errors = response.json()["detail"]
+    body = response.json()
+    assert body["title"] == "Unprocessable Content"
+    assert body["status_code"] == 422
+    errors = body["detail"]
     error_fields = {".".join(str(part) for part in error["loc"][1:]) for error in errors}
 
     assert {"fin", "marke", "baujahr", "kilometerstand"}.issubset(error_fields)
+
+
+def test_unknown_path_returns_problem_details_404(monkeypatch) -> None:
+    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
+    monkeypatch.setattr("gebrauchtwagen.main.engine.dispose", lambda: None)
+
+    with TestClient(app) as client:
+        response = client.get("/unbekannt")
+
+    assert response.status_code == 404
+    assert response.headers["content-type"].startswith("application/problem+json")
+    assert response.json() == {
+        "title": "Not Found",
+        "status_code": 404,
+        "detail": "Der Pfad wurde nicht gefunden: /unbekannt",
+    }
 
 
 def test_get_gebrauchtwagen_returns_empty_list_for_empty_database(monkeypatch) -> None:
