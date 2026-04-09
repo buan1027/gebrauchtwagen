@@ -4,14 +4,17 @@ from typing import Final
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response
+from sqlalchemy import select
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from gebrauchtwagen.config.db import (
     check_database_connection,
     create_tables,
     engine,
+    get_session,
     is_database_connected,
 )
+from gebrauchtwagen.entity import Gebrauchtwagen
 from gebrauchtwagen.entity.dto import (
     GebrauchtwagenRequestDTO,
     GebrauchtwagenResponseDTO,
@@ -29,7 +32,6 @@ async def lifespan(_app: FastAPI):
 
 
 app: Final = FastAPI(title="gebrauchtwagen", lifespan=lifespan)
-_gebrauchtwagen_store: list[GebrauchtwagenResponseDTO] = []
 
 
 @app.exception_handler(StarletteHTTPException)
@@ -70,7 +72,11 @@ def health() -> dict[str, str]:
 
 @app.get("/gebrauchtwagen", response_model=list[GebrauchtwagenResponseDTO])
 def list_gebrauchtwagen() -> list[GebrauchtwagenResponseDTO]:
-    return _gebrauchtwagen_store
+    with get_session() as session:
+        gebrauchtwagen_list = session.scalars(
+            select(Gebrauchtwagen).order_by(Gebrauchtwagen.id)
+        ).all()
+    return [GebrauchtwagenResponseDTO.model_validate(item) for item in gebrauchtwagen_list]
 
 
 @app.post(
@@ -81,10 +87,11 @@ def list_gebrauchtwagen() -> list[GebrauchtwagenResponseDTO]:
 def create_gebrauchtwagen(
     request: GebrauchtwagenRequestDTO,
 ) -> GebrauchtwagenResponseDTO:
-    created = GebrauchtwagenResponseDTO(
-        id=len(_gebrauchtwagen_store) + 1,
-        version=1,
-        **request.model_dump(),
-    )
-    _gebrauchtwagen_store.append(created)
-    return created
+    entity = Gebrauchtwagen(**request.model_dump())
+
+    with get_session() as session:
+        session.add(entity)
+        session.commit()
+        session.refresh(entity)
+
+    return GebrauchtwagenResponseDTO.model_validate(entity)

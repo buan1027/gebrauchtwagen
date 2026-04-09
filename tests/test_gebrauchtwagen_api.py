@@ -1,18 +1,21 @@
 from fastapi.testclient import TestClient
 import pytest
+from sqlalchemy import text
 
+from gebrauchtwagen.config.db import check_database_connection, create_tables, get_session
 from gebrauchtwagen.main import app
 
 
 @pytest.fixture(autouse=True)
-def reset_store(monkeypatch):
-    monkeypatch.setattr("gebrauchtwagen.main._gebrauchtwagen_store", [])
+def reset_database() -> None:
+    check_database_connection()
+    create_tables()
+    with get_session() as session:
+        session.execute(text("TRUNCATE TABLE gebrauchtwagen RESTART IDENTITY"))
+        session.commit()
 
 
-def test_create_gebrauchtwagen_returns_response_dto(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
-
+def test_create_gebrauchtwagen_returns_response_dto() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
@@ -37,11 +40,7 @@ def test_create_gebrauchtwagen_returns_response_dto(monkeypatch) -> None:
     }
 
 
-def test_create_gebrauchtwagen_rejects_invalid_payload(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.engine.dispose", lambda: None)
-
+def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
@@ -64,11 +63,7 @@ def test_create_gebrauchtwagen_rejects_invalid_payload(monkeypatch) -> None:
     assert {"fin", "marke", "baujahr", "kilometerstand"}.issubset(error_fields)
 
 
-def test_unknown_path_returns_problem_details_404(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.engine.dispose", lambda: None)
-
+def test_unknown_path_returns_problem_details_404() -> None:
     with TestClient(app) as client:
         response = client.get("/unbekannt")
 
@@ -81,10 +76,7 @@ def test_unknown_path_returns_problem_details_404(monkeypatch) -> None:
     }
 
 
-def test_get_gebrauchtwagen_returns_empty_list_for_empty_database(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
-
+def test_get_gebrauchtwagen_returns_empty_list_for_empty_database() -> None:
     with TestClient(app) as client:
         response = client.get("/gebrauchtwagen")
 
@@ -92,10 +84,7 @@ def test_get_gebrauchtwagen_returns_empty_list_for_empty_database(monkeypatch) -
     assert response.json() == []
 
 
-def test_get_gebrauchtwagen_returns_serialized_list(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
-
+def test_get_gebrauchtwagen_returns_serialized_list() -> None:
     with TestClient(app) as client:
         create_response = client.post(
             "/gebrauchtwagen",
@@ -125,9 +114,38 @@ def test_get_gebrauchtwagen_returns_serialized_list(monkeypatch) -> None:
     ]
 
 
+def test_persisted_gebrauchtwagen_survives_new_client() -> None:
+    with TestClient(app) as client:
+        create_response = client.post(
+            "/gebrauchtwagen",
+            json={
+                "fin": "WVWZZZ1JZXW000002",
+                "marke": "VW",
+                "modell": "Golf",
+                "baujahr": 2020,
+                "kilometerstand": 30000,
+            },
+        )
+
+    with TestClient(app) as client:
+        list_response = client.get("/gebrauchtwagen")
+
+    assert create_response.status_code == 201
+    assert list_response.status_code == 200
+    assert list_response.json() == [
+        {
+            "id": 1,
+            "version": 1,
+            "fin": "WVWZZZ1JZXW000002",
+            "marke": "VW",
+            "modell": "Golf",
+            "baujahr": 2020,
+            "kilometerstand": 30000,
+        }
+    ]
+
+
 def test_health_reports_connected_database(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
     monkeypatch.setattr("gebrauchtwagen.main.is_database_connected", lambda: True)
 
     with TestClient(app) as client:
@@ -138,8 +156,6 @@ def test_health_reports_connected_database(monkeypatch) -> None:
 
 
 def test_health_reports_disconnected_database(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.check_database_connection", lambda: None)
-    monkeypatch.setattr("gebrauchtwagen.main.create_tables", lambda: None)
     monkeypatch.setattr("gebrauchtwagen.main.is_database_connected", lambda: False)
 
     with TestClient(app) as client:

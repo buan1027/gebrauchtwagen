@@ -34,7 +34,7 @@ class GebrauchtwagenRequestDTO(BaseModel):
 
 
 class GebrauchtwagenResponseDTO(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", from_attributes=True)
 
     id: int = Field(gt=0)
     version: int = Field(ge=1)
