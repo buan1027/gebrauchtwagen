@@ -26,6 +26,17 @@ uv run pytest
 Das ist kuerzer und normalerweise ebenfalls passend, solange `uv` lokal sauber
 funktioniert.
 
+## Typpruefung mit ty
+
+```powershell
+uv run ty check
+```
+
+### Bedeutung
+
+- Fuehrt die statische Typpruefung mit `ty` aus
+- Meldet Typfehler frueh, bevor sie zur Laufzeit auffallen
+
 ## Nur eine Datei testen
 
 ```powershell
