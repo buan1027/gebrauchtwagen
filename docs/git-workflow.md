@@ -18,7 +18,7 @@ git status
 git fetch --prune
 git pull --ff-only
 uv sync
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 .\.venv\Scripts\python.exe -m pytest
 ```
 
@@ -46,7 +46,7 @@ Bringt die lokale `.venv` auf den Stand aus `pyproject.toml` und `uv.lock`.
 Das ist besonders wichtig, wenn beim Pull neue Abhaengigkeiten oder Tooling wie
 `ty` dazugekommen sind.
 
-`docker compose up -d db`
+`docker compose -f extras\compose\postgres\compose.yml up -d db`
 Startet die lokale PostgreSQL-Datenbank im Hintergrund. Die API-Tests brauchen
 diese Datenbank, weil sie Tabellen anlegen und Testdaten schreiben.
 
@@ -65,7 +65,7 @@ git commit -m "docs: Git-Workflow vereinfachen (#17)"
 git fetch --prune
 git pull --ff-only
 uv sync
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 .\.venv\Scripts\python.exe -m pytest
 ```
 
@@ -94,7 +94,8 @@ und nicht der normale Aktualisierungsweg sein.
 - `git fetch` zum sicheren Pruefen neuer Remote-Aenderungen
 - `git pull --ff-only` fuer kontrolliertes Aktualisieren
 - `uv sync` ausfuehren, wenn sich Abhaengigkeiten oder Tools geaendert haben
-- `docker compose up -d db` vor den API-Tests starten
+- `docker compose -f extras\compose\postgres\compose.yml up -d db` vor den
+  API-Tests starten
 - `python -m pytest` zum Verifizieren nach dem Update
 - `commit`, wenn du deinen Stand bewusst sichern willst
 - `stash` nur als Ausnahme, wenn du wirklich nicht committen willst

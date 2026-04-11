@@ -61,7 +61,7 @@ Der uebliche Ablauf ist:
 
 ```powershell
 git pull --ff-only
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 .\.venv\Scripts\python.exe -m pytest
 ```
 

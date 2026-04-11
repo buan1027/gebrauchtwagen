@@ -11,8 +11,8 @@ Ein FastAPI-Projekt fuer eine Gebrauchtwagen-Anwendung.
 ## Start
 
 ```powershell
-docker compose up -d db
 uv sync
+docker compose -f extras\compose\postgres\compose.yml up -d db
 uv run gebrauchtwagen
 ```
 
@@ -24,6 +24,7 @@ Im Browser kannst du danach `https://127.0.0.1:8443` und
 ## Tests
 
 ```powershell
+docker compose -f extras\compose\postgres\compose.yml up -d db
 uv run pytest
 ```
 
@@ -52,5 +53,5 @@ Die Anwendung erwartet lokal eine PostgreSQL-Datenbank mit den Werten aus
 Starten kannst du sie mit:
 
 ```powershell
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 ```

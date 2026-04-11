@@ -28,13 +28,14 @@ uv sync
 ## Lokale Datenbank starten
 
 ```powershell
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 ```
 
 ### Bedeutung
 
-`docker compose up`
-- Erstellt und startet Container aus der `docker-compose.yml`
+`docker compose -f extras\compose\postgres\compose.yml up`
+- Erstellt und startet Container aus der Compose-Datei unter
+  `extras\compose\postgres\compose.yml`
 
 `-d`
 - Startet den Container im Hintergrund
@@ -78,6 +79,6 @@ Danach kannst du im Browser aufrufen:
 
 ```powershell
 uv sync
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 uv run gebrauchtwagen
 ```

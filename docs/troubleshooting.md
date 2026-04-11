@@ -63,13 +63,13 @@ Wenn sie fehlen, kann der HTTPS-Start nicht funktionieren.
 Pruefe zuerst, ob der Container laeuft:
 
 ```powershell
-docker compose ps
+docker compose -f extras\compose\postgres\compose.yml ps
 ```
 
 Bei Bedarf neu starten:
 
 ```powershell
-docker compose up -d db
+docker compose -f extras\compose\postgres\compose.yml up -d db
 ```
 
 Die erwarteten lokalen Verbindungsdaten stehen in

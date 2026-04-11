@@ -13,6 +13,7 @@ docs/build
 htmlcov
 log
 site
+extras/**/__pycache__
 src/gebrauchtwagen/**/__pycache__
 src/gebrauchtwagen/gebrauchtwagen.egg-info
 tests/**/__pycache__

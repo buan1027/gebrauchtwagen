@@ -8,7 +8,7 @@ Diese kleine Bruno-Sammlung hilft bei manuellen lokalen API-Tests.
 
 Collection und Requests liegen unter:
 
-- `bruno/gebrauchtwagen-api/`
+- `extras/bruno/gebrauchtwagen-api/`
 
 Enthalten sind:
 
@@ -18,7 +18,7 @@ Enthalten sind:
 
 ## Nutzung
 
-1. In Bruno den Ordner `bruno/gebrauchtwagen-api` als Collection oeffnen.
+1. In Bruno den Ordner `extras/bruno/gebrauchtwagen-api` als Collection oeffnen.
 2. Das Environment `local` aktivieren.
 3. Lokal die API starten (`uv run gebrauchtwagen`).
 4. GET und POST Requests ausfuehren.
