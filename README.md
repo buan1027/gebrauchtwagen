@@ -55,3 +55,24 @@ Starten kannst du sie mit:
 ```powershell
 docker compose -f extras\compose\postgres\compose.yml up -d db
 ```
+
+## Docker-Image fuer den Appserver
+
+Das Dockerfile basiert auf der Vorlage aus dem Beispielprojekt und ist auf die
+Gebrauchtwagen-API angepasst.
+
+Image bauen:
+
+```powershell
+docker build --tag gebrauchtwagen:0.1.0 .
+```
+
+Container gegen die lokal laufende PostgreSQL-Datenbank starten:
+
+```powershell
+docker run --rm --publish 8000:8000 --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal gebrauchtwagen:0.1.0
+```
+
+Im Container lauscht die App auf `0.0.0.0:8000`. Der Datenbank-Host kann ueber
+`GEBRAUCHTWAGEN_DB_HOST` gesetzt werden. Fuer ein spaeteres Compose-Setup ist
+als Standard `db` vorgesehen.
