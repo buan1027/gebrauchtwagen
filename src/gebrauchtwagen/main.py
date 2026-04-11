@@ -11,6 +11,7 @@ from gebrauchtwagen.config.db import (
     create_tables,
     engine,
 )
+from gebrauchtwagen.graphql_api import graphql_router
 from gebrauchtwagen.problem_details import create_problem_details
 from gebrauchtwagen.router.gebrauchtwagen_router import router as gebrauchtwagen_router
 from gebrauchtwagen.router.health_router import router as health_router
@@ -30,6 +31,7 @@ app: Final = FastAPI(title="gebrauchtwagen", lifespan=lifespan)
 app.include_router(root_router)
 app.include_router(health_router)
 app.include_router(gebrauchtwagen_router)
+app.include_router(graphql_router, prefix="/graphql")
 
 
 @app.exception_handler(StarletteHTTPException)

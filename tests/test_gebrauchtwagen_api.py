@@ -151,6 +151,57 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
     ]
 
 
+def test_graphql_query_reads_persisted_gebrauchtwagen() -> None:
+    with TestClient(app) as client:
+        create_response = client.post(
+            "/gebrauchtwagen",
+            json={
+                "fin": "WVWZZZ1JZXW000003",
+                "marke": "BMW",
+                "modell": "i3",
+                "baujahr": 2019,
+                "kilometerstand": 42000,
+            },
+        )
+
+        graphql_response = client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                  gebrauchtwagen {
+                    id
+                    version
+                    fin
+                    marke
+                    modell
+                    baujahr
+                    kilometerstand
+                  }
+                }
+                """
+            },
+        )
+
+    assert create_response.status_code == 201
+    assert graphql_response.status_code == 200
+    assert graphql_response.json() == {
+        "data": {
+            "gebrauchtwagen": [
+                {
+                    "id": 1,
+                    "version": 1,
+                    "fin": "WVWZZZ1JZXW000003",
+                    "marke": "BMW",
+                    "modell": "i3",
+                    "baujahr": 2019,
+                    "kilometerstand": 42000,
+                }
+            ]
+        }
+    }
+
+
 def test_health_reports_connected_database(monkeypatch) -> None:
     monkeypatch.setattr(
         "gebrauchtwagen.router.health_router.is_database_connected",
