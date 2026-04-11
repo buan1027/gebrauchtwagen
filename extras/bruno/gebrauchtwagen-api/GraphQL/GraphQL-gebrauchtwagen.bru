@@ -1,0 +1,30 @@
+meta {
+  name: GraphQL gebrauchtwagen
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:graphql {
+  query {
+    gebrauchtwagen {
+      id
+      version
+      fin
+      marke
+      modell
+      baujahr
+      kilometerstand
+    }
+  }
+}

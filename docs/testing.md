@@ -37,10 +37,11 @@ uv run ty check
 - Fuehrt die statische Typpruefung mit `ty` aus
 - Meldet Typfehler frueh, bevor sie zur Laufzeit auffallen
 
-## Nur eine Datei testen
+## Nur einen Bereich testen
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest tests\test_gebrauchtwagen_api.py
+.\.venv\Scripts\python.exe -m pytest tests\integration\rest
+.\.venv\Scripts\python.exe -m pytest tests\integration\graphql_api
 ```
 
 ## Mehr Details im Output

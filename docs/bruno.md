@@ -12,16 +12,30 @@ Collection und Requests liegen unter:
 
 Enthalten sind:
 
-- `GET-gebrauchtwagen.bru`
-- `POST-gebrauchtwagen.bru`
+- `REST/GET-gebrauchtwagen.bru`
+- `REST/POST-gebrauchtwagen.bru`
+- `GraphQL/GraphQL-gebrauchtwagen.bru`
 - `environments/local.bru`
 
 ## Nutzung
 
 1. In Bruno den Ordner `extras/bruno/gebrauchtwagen-api` als Collection oeffnen.
 2. Das Environment `local` aktivieren.
-3. Lokal die API starten (`uv run gebrauchtwagen`).
-4. GET und POST Requests ausfuehren.
+3. Lokal die Datenbank und API starten.
+4. GET, POST und GraphQL-Query ausfuehren.
+
+```powershell
+docker compose -f extras\compose\postgres\compose.yml up -d db
+uv run gebrauchtwagen
+```
+
+## VS-Code-Erweiterung
+
+1. Das Bruno-Icon in der linken Seitenleiste oeffnen.
+2. Ueber das Collection-Menue `Open Collection` auswaehlen.
+3. Den Ordner `extras/bruno/gebrauchtwagen-api` oeffnen.
+4. Das Environment `local` auswaehlen.
+5. Bei Bedarf die SSL-Verifikation fuer lokale Tests deaktivieren.
 
 Hinweis:
 - Lokal wird ein selbstsigniertes TLS-Zertifikat verwendet. Falls noetig, in Bruno die Zertifikatspruefung fuer lokale Tests deaktivieren.

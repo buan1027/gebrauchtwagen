@@ -36,6 +36,19 @@ dev = [
 python-version = "3.14"
 root = ["./src", "./tests"]
 
+[tool.pytest.ini_options]
+minversion = "9.0.2"
+pythonpath = ["src"]
+testpaths = ["tests/integration"]
+markers = [
+    "rest: REST-Schnittstelle",
+    "get_request: GET-Requests",
+    "post_request: POST-Requests",
+    "health: Health-Endpunkt",
+    "graphql: GraphQL-Schnittstelle",
+    "query: Queries bei GraphQL",
+]
+
 [tool.ruff]
 preview = true
 
