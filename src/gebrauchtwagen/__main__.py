@@ -1,3 +1,5 @@
+"""Startpunkt fuer die Gebrauchtwagen-Anwendung."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -8,6 +10,7 @@ from gebrauchtwagen.config.settings import load_settings
 
 
 def main() -> None:
+    """Run the application with Uvicorn."""
     settings = load_settings()
     project_root = Path(__file__).resolve().parents[2]
 

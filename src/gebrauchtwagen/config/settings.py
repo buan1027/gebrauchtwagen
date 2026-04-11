@@ -2,25 +2,31 @@
 
 from __future__ import annotations
 
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
-import tomllib
 
 
 @dataclass(slots=True)
 class ServerSettings:
+    """Server-Konfiguration."""
+
     host: str
     port: int
 
 
 @dataclass(slots=True)
 class TlsSettings:
+    """TLS-Konfiguration."""
+
     certfile: Path
     keyfile: Path
 
 
 @dataclass(slots=True)
 class DbSettings:
+    """Datenbank-Konfiguration."""
+
     host: str
     port: int
     name: str
@@ -31,12 +37,15 @@ class DbSettings:
 
 @dataclass(slots=True)
 class Settings:
+    """Gesamte Anwendungskonfiguration."""
+
     server: ServerSettings
     tls: TlsSettings
     db: DbSettings
 
 
 def load_settings() -> Settings:
+    """Lies die Anwendungskonfiguration aus der TOML-Datei."""
     config_path = Path(__file__).with_name("application.toml")
     data = tomllib.loads(config_path.read_text(encoding="utf-8"))
 

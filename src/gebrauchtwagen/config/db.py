@@ -7,9 +7,9 @@ from sqlalchemy.engine import URL
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
+import gebrauchtwagen.entity.gebrauchtwagen  # noqa: F401
 from gebrauchtwagen.config.settings import load_settings
 from gebrauchtwagen.entity import Base
-import gebrauchtwagen.entity.gebrauchtwagen  # noqa: F401
 
 settings = load_settings()
 

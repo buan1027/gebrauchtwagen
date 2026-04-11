@@ -1,3 +1,5 @@
+"""FastAPI-Anwendung fuer die Gebrauchtwagen-API."""
+
 from contextlib import asynccontextmanager
 from typing import Final
 
@@ -19,7 +21,7 @@ from gebrauchtwagen.router.root_router import router as root_router
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(_app: FastAPI):  # noqa: RUF029
     """Beim Start DB pruefen und Tabellen erzeugen, beim Ende Engine freigeben."""
     check_database_connection()
     create_tables()

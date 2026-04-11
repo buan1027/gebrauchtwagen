@@ -1,3 +1,5 @@
+"""DTOs fuer Gebrauchtwagen."""
+
 from __future__ import annotations
 
 from datetime import date
@@ -17,6 +19,8 @@ FinText = Annotated[
 
 
 class GebrauchtwagenRequestDTO(BaseModel):
+    """Request-DTO fuer einen neuen Gebrauchtwagen."""
+
     model_config = ConfigDict(extra="forbid")
 
     fin: FinText
@@ -28,12 +32,15 @@ class GebrauchtwagenRequestDTO(BaseModel):
     @field_validator("fin", "marke", "modell")
     @classmethod
     def validate_text(cls, value: str) -> str:
+        """Validiere nichtleere Textfelder."""
         if not value:
             raise ValueError("darf nicht leer sein")
         return value
 
 
 class GebrauchtwagenResponseDTO(BaseModel):
+    """Response-DTO fuer einen gespeicherten Gebrauchtwagen."""
+
     model_config = ConfigDict(extra="forbid", from_attributes=True)
 
     id: int = Field(gt=0)

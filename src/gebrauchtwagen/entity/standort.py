@@ -1,0 +1,1 @@
+"""Entity-Platzhalter fuer Standorte."""
