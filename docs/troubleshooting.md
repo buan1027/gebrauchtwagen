@@ -4,7 +4,7 @@
 
 Das bedeutet meistens:
 - Du hast lokale Commits, die nicht auf dem Remote sind
-- Oder dein Branch und der Remote-Branch sind auseinander gelaufen
+- Oder dein lokaler `main`-Stand und `origin/main` sind auseinander gelaufen
 
 Typische erste Checks:
 
