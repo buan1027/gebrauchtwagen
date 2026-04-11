@@ -2,7 +2,11 @@ from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy import text
 
-from gebrauchtwagen.config.db import check_database_connection, create_tables, get_session
+from gebrauchtwagen.config.db import (
+    check_database_connection,
+    create_tables,
+    get_session,
+)
 from gebrauchtwagen.main import app
 
 
@@ -58,7 +62,9 @@ def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
     assert body["title"] == "Unprocessable Content"
     assert body["status_code"] == 422
     errors = body["detail"]
-    error_fields = {".".join(str(part) for part in error["loc"][1:]) for error in errors}
+    error_fields = {
+        ".".join(str(part) for part in error["loc"][1:]) for error in errors
+    }
 
     assert {"fin", "marke", "baujahr", "kilometerstand"}.issubset(error_fields)
 
@@ -146,7 +152,10 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
 
 
 def test_health_reports_connected_database(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.is_database_connected", lambda: True)
+    monkeypatch.setattr(
+        "gebrauchtwagen.router.health_router.is_database_connected",
+        lambda: True,
+    )
 
     with TestClient(app) as client:
         response = client.get("/health")
@@ -156,7 +165,10 @@ def test_health_reports_connected_database(monkeypatch) -> None:
 
 
 def test_health_reports_disconnected_database(monkeypatch) -> None:
-    monkeypatch.setattr("gebrauchtwagen.main.is_database_connected", lambda: False)
+    monkeypatch.setattr(
+        "gebrauchtwagen.router.health_router.is_database_connected",
+        lambda: False,
+    )
 
     with TestClient(app) as client:
         response = client.get("/health")
