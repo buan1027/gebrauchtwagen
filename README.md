@@ -76,3 +76,23 @@ docker run --rm --publish 8000:8000 --env GEBRAUCHTWAGEN_DB_HOST=host.docker.int
 Im Container lauscht die App auf `0.0.0.0:8000`. Der Datenbank-Host kann ueber
 `GEBRAUCHTWAGEN_DB_HOST` gesetzt werden. Fuer ein spaeteres Compose-Setup ist
 als Standard `db` vorgesehen.
+
+## Docker Compose fuer App und Datenbank
+
+Das Compose-Setup folgt der Struktur aus dem Beispielprojekt: `backend` bindet
+die Infrastruktur ein, `gebrauchtwagen` startet zusaetzlich den Appserver.
+
+Voraussetzung ist, dass das Image `gebrauchtwagen:0.1.0` lokal gebaut wurde.
+
+```powershell
+cd extras\compose\gebrauchtwagen
+docker compose up
+```
+
+Beenden:
+
+```powershell
+docker compose down
+```
+
+Die App ist im Compose-Setup unter `http://127.0.0.1:8000` erreichbar.
