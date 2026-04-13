@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
+
+from .enums import Fahrzeugklasse, Kraftstoffart
 
 NonEmptyText = Annotated[
     str,
@@ -28,6 +30,9 @@ class GebrauchtwagenRequestDTO(BaseModel):
     modell: NonEmptyText
     baujahr: int = Field(ge=1900, le=date.today().year)
     kilometerstand: int = Field(ge=0)
+    kraftstoffart: Kraftstoffart
+    fahrzeugklasse: Fahrzeugklasse
+    ausstattung: dict[str, Any] = Field(default_factory=dict)
     erstzulassung: date
     schadenfrei: bool
     beschreibung_url: str | None = None
@@ -53,6 +58,9 @@ class GebrauchtwagenResponseDTO(BaseModel):
     modell: str
     baujahr: int
     kilometerstand: int
+    kraftstoffart: Kraftstoffart
+    fahrzeugklasse: Fahrzeugklasse
+    ausstattung: dict[str, Any]
     erstzulassung: date
     schadenfrei: bool
     beschreibung_url: str | None

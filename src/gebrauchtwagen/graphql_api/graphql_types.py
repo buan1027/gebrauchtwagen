@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 from datetime import date, datetime
+from typing import Any
 
 import strawberry
 
 from gebrauchtwagen.entity.dto import GebrauchtwagenResponseDTO
+from gebrauchtwagen.entity.enums import Fahrzeugklasse, Kraftstoffart
 
 __all__ = ["Gebrauchtwagen"]
+
+KraftstoffartGQL = strawberry.enum(Kraftstoffart)
+FahrzeugklasseGQL = strawberry.enum(Fahrzeugklasse)
 
 
 @strawberry.type
@@ -22,6 +27,9 @@ class Gebrauchtwagen:
     modell: str
     baujahr: int
     kilometerstand: int
+    kraftstoffart: Kraftstoffart
+    fahrzeugklasse: Fahrzeugklasse
+    ausstattung: strawberry.scalars.JSON
     erstzulassung: date
     schadenfrei: bool
     beschreibung_url: str | None
@@ -39,6 +47,9 @@ class Gebrauchtwagen:
             modell=dto.modell,
             baujahr=dto.baujahr,
             kilometerstand=dto.kilometerstand,
+            kraftstoffart=dto.kraftstoffart,
+            fahrzeugklasse=dto.fahrzeugklasse,
+            ausstattung=dto.ausstattung,
             erstzulassung=dto.erstzulassung,
             schadenfrei=dto.schadenfrei,
             beschreibung_url=dto.beschreibung_url,

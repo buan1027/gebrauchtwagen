@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy import String, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
+from .enums import Fahrzeugklasse, Kraftstoffart
 
 
 class Gebrauchtwagen(Base):
@@ -21,8 +24,15 @@ class Gebrauchtwagen(Base):
     modell: Mapped[str] = mapped_column(String(100))
     baujahr: Mapped[int]
     kilometerstand: Mapped[int]
+    kraftstoffart: Mapped[Kraftstoffart] = mapped_column(
+        SAEnum(Kraftstoffart, name="kraftstoffart")
+    )
+    fahrzeugklasse: Mapped[Fahrzeugklasse] = mapped_column(
+        SAEnum(Fahrzeugklasse, name="fahrzeugklasse")
+    )
     erstzulassung: Mapped[date]
     schadenfrei: Mapped[bool]
+    ausstattung: Mapped[dict] = mapped_column(JSONB, default_factory=dict)
     beschreibung_url: Mapped[str | None] = mapped_column(String(255), default=None)
     erzeugt: Mapped[datetime] = mapped_column(init=False, server_default=func.now())
     aktualisiert: Mapped[datetime] = mapped_column(
