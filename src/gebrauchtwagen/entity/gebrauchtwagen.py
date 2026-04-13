@@ -3,14 +3,20 @@
 from __future__ import annotations
 
 from datetime import date, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy import String, func
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 from .enums import Fahrzeugklasse, Kraftstoffart
+
+if TYPE_CHECKING:
+    from .Hauptuntersuchung import Hauptuntersuchung
+    from .schaden import Schaden
+    from .standort import Standort
 
 
 class Gebrauchtwagen(Base):
@@ -39,3 +45,19 @@ class Gebrauchtwagen(Base):
         init=False, server_default=func.now(), onupdate=func.now()
     )
     version: Mapped[int] = mapped_column(default=1)
+
+    standort: Mapped[Standort | None] = relationship(
+        back_populates="gebrauchtwagen", uselist=False, init=False
+    )
+    schaeden: Mapped[list[Schaden]] = relationship(
+        back_populates="gebrauchtwagen",
+        cascade="all, delete-orphan",
+        default_factory=list,
+        init=False,
+    )
+    hauptuntersuchungen: Mapped[list[Hauptuntersuchung]] = relationship(
+        back_populates="gebrauchtwagen",
+        cascade="all, delete-orphan",
+        default_factory=list,
+        init=False,
+    )
