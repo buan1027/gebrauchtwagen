@@ -27,8 +27,8 @@ class Gebrauchtwagen:
     modell: str
     baujahr: int
     kilometerstand: int
-    kraftstoffart: Kraftstoffart
-    fahrzeugklasse: Fahrzeugklasse
+    kraftstoffart: KraftstoffartGQL
+    fahrzeugklasse: FahrzeugklasseGQL
     ausstattung: strawberry.scalars.JSON
     erstzulassung: date
     schadenfrei: bool
@@ -47,8 +47,8 @@ class Gebrauchtwagen:
             modell=dto.modell,
             baujahr=dto.baujahr,
             kilometerstand=dto.kilometerstand,
-            kraftstoffart=dto.kraftstoffart,
-            fahrzeugklasse=dto.fahrzeugklasse,
+            kraftstoffart=KraftstoffartGQL(dto.kraftstoffart.value),
+            fahrzeugklasse=FahrzeugklasseGQL(dto.fahrzeugklasse.value),
             ausstattung=dto.ausstattung,
             erstzulassung=dto.erstzulassung,
             schadenfrei=dto.schadenfrei,
