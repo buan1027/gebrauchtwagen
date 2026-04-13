@@ -58,10 +58,30 @@ docker compose -f extras\compose\postgres\compose.yml up -d db
 
 ## Docker-Image fuer den Appserver
 
-Das Dockerfile basiert auf der Vorlage aus dem Beispielprojekt und ist auf die
-Gebrauchtwagen-API angepasst.
+Die Docker-Builds basieren auf Varianten aus dem Beispielprojekt.
 
-Image bauen:
+- `Dockerfile.trixie`: Standardvariante fuer Team-Entwicklung und CI (empfohlen)
+- `Dockerfile.alpine`: zusaetzliche, schlanke Variante
+- `docker-bake.hcl`: zentrale Build-Definition fuer beide Targets
+
+Die Variante `hardened` wird aktuell bewusst nicht uebernommen, weil der
+zusatzliche Hardening-Aufwand (z. B. restriktivere Laufzeitparameter und
+projektweite Security-Ausnahmen) fuer den aktuellen Projektstand noch keinen
+Mehrwert gegenueber `trixie` liefert.
+
+Empfohlenes Standard-Image bauen:
+
+```powershell
+docker buildx bake trixie
+```
+
+Zusaetzliche Variante bauen:
+
+```powershell
+docker buildx bake alpine
+```
+
+Alternativ (ohne Bake) bleibt der bisherige Build nutzbar:
 
 ```powershell
 docker build --tag gebrauchtwagen:0.1.0 .
@@ -70,7 +90,7 @@ docker build --tag gebrauchtwagen:0.1.0 .
 Container gegen die lokal laufende PostgreSQL-Datenbank starten:
 
 ```powershell
-docker run --rm --publish 8000:8000 --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal gebrauchtwagen:0.1.0
+docker run --rm --publish 8000:8000 --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal gebrauchtwagen:trixie
 ```
 
 Im Container lauscht die App auf `0.0.0.0:8000`. Der Datenbank-Host kann ueber
