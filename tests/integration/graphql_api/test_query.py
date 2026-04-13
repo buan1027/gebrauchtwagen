@@ -20,6 +20,9 @@ def test_graphql_query_reads_persisted_gebrauchtwagen() -> None:
                 "modell": "i3",
                 "baujahr": 2019,
                 "kilometerstand": 42000,
+                "erstzulassung": "2019-05-20",
+                "schadenfrei": True,
+                "beschreibung_url": None,
             },
         )
 

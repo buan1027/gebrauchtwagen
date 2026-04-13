@@ -6,6 +6,7 @@ from sqlalchemy import text
 from gebrauchtwagen.config.db import (
     check_database_connection,
     create_tables,
+    drop_tables,
     get_session,
 )
 
@@ -14,7 +15,5 @@ from gebrauchtwagen.config.db import (
 def reset_database() -> None:
     """Setze die Datenbank vor jedem Integrationstest zurueck."""
     check_database_connection()
+    drop_tables()
     create_tables()
-    with get_session() as session:
-        session.execute(text("TRUNCATE TABLE gebrauchtwagen RESTART IDENTITY"))
-        session.commit()

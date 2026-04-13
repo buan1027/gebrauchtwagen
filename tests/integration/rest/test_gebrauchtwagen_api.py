@@ -20,11 +20,17 @@ def test_create_gebrauchtwagen_returns_response_dto() -> None:
                 "modell": "A3",
                 "baujahr": 2021,
                 "kilometerstand": 25000,
+                "erstzulassung": "2021-03-15",
+                "schadenfrei": True,
+                "beschreibung_url": None,
             },
         )
 
     assert response.status_code == HTTPStatus.CREATED
-    assert response.json() == {
+    body = response.json()
+    assert isinstance(body.pop("erzeugt"), str)
+    assert isinstance(body.pop("aktualisiert"), str)
+    assert body == {
         "id": 1,
         "version": 1,
         "fin": "WVWZZZ1JZXW000001",
@@ -32,6 +38,9 @@ def test_create_gebrauchtwagen_returns_response_dto() -> None:
         "modell": "A3",
         "baujahr": 2021,
         "kilometerstand": 25000,
+        "erstzulassung": "2021-03-15",
+        "schadenfrei": True,
+        "beschreibung_url": None,
     }
 
 
@@ -99,6 +108,9 @@ def test_get_gebrauchtwagen_returns_serialized_list() -> None:
                 "modell": "A3",
                 "baujahr": 2021,
                 "kilometerstand": 25000,
+                "erstzulassung": "2021-03-15",
+                "schadenfrei": True,
+                "beschreibung_url": None,
             },
         )
 
@@ -106,17 +118,23 @@ def test_get_gebrauchtwagen_returns_serialized_list() -> None:
 
     assert create_response.status_code == HTTPStatus.CREATED
     assert list_response.status_code == HTTPStatus.OK
-    assert list_response.json() == [
-        {
-            "id": 1,
-            "version": 1,
-            "fin": "WVWZZZ1JZXW000001",
-            "marke": "Audi",
-            "modell": "A3",
-            "baujahr": 2021,
-            "kilometerstand": 25000,
-        }
-    ]
+    items = list_response.json()
+    assert len(items) == 1
+    item = items[0]
+    assert isinstance(item.pop("erzeugt"), str)
+    assert isinstance(item.pop("aktualisiert"), str)
+    assert item == {
+        "id": 1,
+        "version": 1,
+        "fin": "WVWZZZ1JZXW000001",
+        "marke": "Audi",
+        "modell": "A3",
+        "baujahr": 2021,
+        "kilometerstand": 25000,
+        "erstzulassung": "2021-03-15",
+        "schadenfrei": True,
+        "beschreibung_url": None,
+    }
 
 
 @mark.rest
@@ -131,6 +149,9 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
                 "modell": "Golf",
                 "baujahr": 2020,
                 "kilometerstand": 30000,
+                "erstzulassung": "2020-06-01",
+                "schadenfrei": False,
+                "beschreibung_url": None,
             },
         )
 
@@ -139,17 +160,23 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
 
     assert create_response.status_code == HTTPStatus.CREATED
     assert list_response.status_code == HTTPStatus.OK
-    assert list_response.json() == [
-        {
-            "id": 1,
-            "version": 1,
-            "fin": "WVWZZZ1JZXW000002",
-            "marke": "VW",
-            "modell": "Golf",
-            "baujahr": 2020,
-            "kilometerstand": 30000,
-        }
-    ]
+    items = list_response.json()
+    assert len(items) == 1
+    item = items[0]
+    assert isinstance(item.pop("erzeugt"), str)
+    assert isinstance(item.pop("aktualisiert"), str)
+    assert item == {
+        "id": 1,
+        "version": 1,
+        "fin": "WVWZZZ1JZXW000002",
+        "marke": "VW",
+        "modell": "Golf",
+        "baujahr": 2020,
+        "kilometerstand": 30000,
+        "erstzulassung": "2020-06-01",
+        "schadenfrei": False,
+        "beschreibung_url": None,
+    }
 
 
 @mark.rest

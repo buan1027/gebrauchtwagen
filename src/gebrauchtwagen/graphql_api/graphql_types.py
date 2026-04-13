@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date, datetime
+
 import strawberry
 
 from gebrauchtwagen.entity.dto import GebrauchtwagenResponseDTO
@@ -20,6 +22,11 @@ class Gebrauchtwagen:
     modell: str
     baujahr: int
     kilometerstand: int
+    erstzulassung: date
+    schadenfrei: bool
+    beschreibung_url: str | None
+    erzeugt: datetime
+    aktualisiert: datetime
 
     @classmethod
     def from_dto(cls, dto: GebrauchtwagenResponseDTO) -> Gebrauchtwagen:
@@ -32,4 +39,9 @@ class Gebrauchtwagen:
             modell=dto.modell,
             baujahr=dto.baujahr,
             kilometerstand=dto.kilometerstand,
+            erstzulassung=dto.erstzulassung,
+            schadenfrei=dto.schadenfrei,
+            beschreibung_url=dto.beschreibung_url,
+            erzeugt=dto.erzeugt,
+            aktualisiert=dto.aktualisiert,
         )

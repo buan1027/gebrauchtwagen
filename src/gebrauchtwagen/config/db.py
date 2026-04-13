@@ -45,6 +45,11 @@ def create_tables() -> None:
     Base.metadata.create_all(bind=engine)
 
 
+def drop_tables() -> None:
+    """Loesche alle registrierten Tabellen."""
+    Base.metadata.drop_all(bind=engine)
+
+
 def check_database_connection() -> None:
     """Prüfe, ob die Anwendung die Datenbank erreichen kann."""
     with engine.connect() as connection:
