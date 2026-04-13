@@ -62,6 +62,12 @@ def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
                 "modell": "A3",
                 "baujahr": 1800,
                 "kilometerstand": -10,
+                "kraftstoffart": "WASSER",
+                "fahrzeugklasse": "FAMILIE",
+                "ausstattung": [],
+                "erstzulassung": "2021-03-15",
+                "schadenfrei": True,
+                "beschreibung_url": None,
             },
         )
 
@@ -74,7 +80,15 @@ def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
         ".".join(str(part) for part in error["loc"][1:]) for error in errors
     }
 
-    assert {"fin", "marke", "baujahr", "kilometerstand"}.issubset(error_fields)
+    assert {
+        "fin",
+        "marke",
+        "baujahr",
+        "kilometerstand",
+        "kraftstoffart",
+        "fahrzeugklasse",
+        "ausstattung",
+    }.issubset(error_fields)
 
 
 @mark.rest
@@ -163,7 +177,13 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
                 "kilometerstand": 30000,
                 "kraftstoffart": "DIESEL",
                 "fahrzeugklasse": "KOMPAKTKLASSE",
-                "ausstattung": {},
+                "ausstattung": {
+                    "assistenz": {
+                        "acc": True,
+                        "spurhalteassistent": False,
+                    },
+                    "multimedia": ["carplay", "bluetooth"],
+                },
                 "erstzulassung": "2020-06-01",
                 "schadenfrei": False,
                 "beschreibung_url": None,
@@ -190,7 +210,13 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
         "kilometerstand": 30000,
         "kraftstoffart": "DIESEL",
         "fahrzeugklasse": "KOMPAKTKLASSE",
-        "ausstattung": {},
+        "ausstattung": {
+            "assistenz": {
+                "acc": True,
+                "spurhalteassistent": False,
+            },
+            "multimedia": ["carplay", "bluetooth"],
+        },
         "erstzulassung": "2020-06-01",
         "schadenfrei": False,
         "beschreibung_url": None,
