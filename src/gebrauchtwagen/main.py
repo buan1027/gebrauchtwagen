@@ -18,6 +18,7 @@ from gebrauchtwagen.problem_details import create_problem_details
 from gebrauchtwagen.router.gebrauchtwagen_router import router as gebrauchtwagen_router
 from gebrauchtwagen.router.health_router import router as health_router
 from gebrauchtwagen.router.root_router import router as root_router
+from gebrauchtwagen.security import auth_router
 
 
 @asynccontextmanager
@@ -32,6 +33,7 @@ async def lifespan(_app: FastAPI):  # noqa: RUF029
 app: Final = FastAPI(title="gebrauchtwagen", lifespan=lifespan)
 app.include_router(root_router)
 app.include_router(health_router)
+app.include_router(auth_router)
 app.include_router(gebrauchtwagen_router)
 app.include_router(graphql_router, prefix="/graphql")
 

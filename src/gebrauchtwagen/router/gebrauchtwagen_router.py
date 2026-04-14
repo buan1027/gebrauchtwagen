@@ -2,12 +2,13 @@
 
 from typing import Final
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 
 from gebrauchtwagen.entity.dto import (
     GebrauchtwagenRequestDTO,
     GebrauchtwagenResponseDTO,
 )
+from gebrauchtwagen.security import Role, RolesRequired
 from gebrauchtwagen.service import gebrauchtwagen_service
 
 __all__ = ["router"]
@@ -23,6 +24,7 @@ def list_gebrauchtwagen() -> list[GebrauchtwagenResponseDTO]:
 
 @router.post(
     "",
+    dependencies=[Depends(RolesRequired(Role.ADMIN))],
     response_model=GebrauchtwagenResponseDTO,
     status_code=status.HTTP_201_CREATED,
 )

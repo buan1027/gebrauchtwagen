@@ -38,12 +38,24 @@ class DbSettings:
 
 
 @dataclass(slots=True)
+class KeycloakSettings:
+    """Keycloak-/OIDC-Konfiguration."""
+
+    server_url: str
+    realm_name: str
+    client_id: str
+    client_secret_key: str
+    verify: bool
+
+
+@dataclass(slots=True)
 class Settings:
     """Gesamte Anwendungskonfiguration."""
 
     server: ServerSettings
     tls: TlsSettings
     db: DbSettings
+    keycloak: KeycloakSettings
 
 
 def _get_env(name: str) -> str | None:
@@ -79,6 +91,10 @@ def load_settings() -> Settings:
     server: Mapping[str, str | int] = data["server"]
     tls: Mapping[str, str] = data["tls"]
     db: Mapping[str, str | int | bool] = data["db"]
+    keycloak: Mapping[str, str | int | bool] = data["keycloak"]
+    keycloak_schema = _get_env("KEYCLOAK_SCHEMA") or str(keycloak["schema"])
+    keycloak_host = _get_env("KEYCLOAK_HOST") or str(keycloak["host"])
+    keycloak_port = _get_int_env("KEYCLOAK_PORT", int(keycloak["port"]))
 
     return Settings(
         server=ServerSettings(
@@ -96,5 +112,16 @@ def load_settings() -> Settings:
             username=_get_env("DB_USERNAME") or str(db["username"]),
             password=_get_env("DB_PASSWORD") or str(db["password"]),
             echo=_get_bool_env("DB_ECHO", default=bool(db["echo"])),
+        ),
+        keycloak=KeycloakSettings(
+            server_url=f"{keycloak_schema}://{keycloak_host}:{keycloak_port}/",
+            realm_name=_get_env("KEYCLOAK_REALM") or str(keycloak["realm"]),
+            client_id=_get_env("KEYCLOAK_CLIENT_ID") or str(keycloak["client_id"]),
+            client_secret_key=_get_env("KEYCLOAK_CLIENT_SECRET")
+            or str(keycloak["client_secret"]),
+            verify=_get_bool_env(
+                "KEYCLOAK_VERIFY",
+                default=bool(keycloak["verify"]),
+            ),
         ),
     )
