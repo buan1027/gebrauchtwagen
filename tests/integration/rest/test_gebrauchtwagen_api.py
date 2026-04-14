@@ -7,6 +7,8 @@ from pytest import mark
 
 from gebrauchtwagen.main import app
 
+AUTH_HEADERS = {"Authorization": "Bearer integration-test-token"}
+
 
 @mark.rest
 @mark.post_request
@@ -14,6 +16,7 @@ def test_create_gebrauchtwagen_returns_response_dto() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
             json={
                 "fin": "WVWZZZ1JZXW000001",
                 "marke": "Audi",
@@ -56,6 +59,7 @@ def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
             json={
                 "fin": "",
                 "marke": "  ",
@@ -92,6 +96,30 @@ def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
 
 
 @mark.rest
+@mark.post_request
+def test_create_gebrauchtwagen_requires_bearer_token() -> None:
+    with TestClient(app) as client:
+        response = client.post(
+            "/gebrauchtwagen",
+            json={
+                "fin": "WVWZZZ1JZXW000001",
+                "marke": "Audi",
+                "modell": "A3",
+                "baujahr": 2021,
+                "kilometerstand": 25000,
+                "kraftstoffart": "BENZIN",
+                "fahrzeugklasse": "KOMPAKTKLASSE",
+                "ausstattung": {},
+                "erstzulassung": "2021-03-15",
+                "schadenfrei": True,
+                "beschreibung_url": None,
+            },
+        )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+
+
+@mark.rest
 @mark.get_request
 def test_unknown_path_returns_problem_details_404() -> None:
     with TestClient(app) as client:
@@ -122,6 +150,7 @@ def test_get_gebrauchtwagen_returns_serialized_list() -> None:
     with TestClient(app) as client:
         create_response = client.post(
             "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
             json={
                 "fin": "WVWZZZ1JZXW000001",
                 "marke": "Audi",
@@ -169,6 +198,7 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
     with TestClient(app) as client:
         create_response = client.post(
             "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
             json={
                 "fin": "WVWZZZ1JZXW000002",
                 "marke": "VW",

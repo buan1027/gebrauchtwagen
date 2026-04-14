@@ -7,6 +7,8 @@ from pytest import mark
 
 from gebrauchtwagen.main import app
 
+AUTH_HEADERS = {"Authorization": "Bearer integration-test-token"}
+
 
 @mark.graphql
 @mark.query
@@ -14,6 +16,7 @@ def test_graphql_query_reads_persisted_gebrauchtwagen() -> None:
     with TestClient(app) as client:
         create_response = client.post(
             "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
             json={
                 "fin": "WVWZZZ1JZXW000003",
                 "marke": "BMW",
