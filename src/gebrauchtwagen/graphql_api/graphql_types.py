@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Any
+from typing import Any, cast
 
 import strawberry
 
@@ -49,7 +49,7 @@ class Gebrauchtwagen:
             kilometerstand=dto.kilometerstand,
             kraftstoffart=KraftstoffartGQL(dto.kraftstoffart.value),
             fahrzeugklasse=FahrzeugklasseGQL(dto.fahrzeugklasse.value),
-            ausstattung=dto.ausstattung,
+            ausstattung=cast("strawberry.scalars.JSON", dto.ausstattung),
             erstzulassung=dto.erstzulassung,
             schadenfrei=dto.schadenfrei,
             beschreibung_url=dto.beschreibung_url,
