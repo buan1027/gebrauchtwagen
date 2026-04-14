@@ -8,4 +8,5 @@ Kurze Team-Anleitungen fuer wiederkehrende Entwicklungsablaeufe.
 - [Lokales Setup](local-setup.md)
 - [Tests](testing.md)
 - [Bruno Requests](bruno.md)
+- [Keycloak](keycloak.md)
 - [Troubleshooting](troubleshooting.md)

@@ -37,6 +37,13 @@ services:
       GEBRAUCHTWAGEN_DB_NAME: gebrauchtwagen
       GEBRAUCHTWAGEN_DB_USERNAME: gebrauchtwagen
       GEBRAUCHTWAGEN_DB_PASSWORD: gebrauchtwagen
+      GEBRAUCHTWAGEN_KEYCLOAK_SCHEMA: https
+      GEBRAUCHTWAGEN_KEYCLOAK_HOST: host.docker.internal
+      GEBRAUCHTWAGEN_KEYCLOAK_PORT: 8843
+      GEBRAUCHTWAGEN_KEYCLOAK_REALM: python
+      GEBRAUCHTWAGEN_KEYCLOAK_CLIENT_ID: python-client
+      GEBRAUCHTWAGEN_KEYCLOAK_CLIENT_SECRET: kysQimBCxPWwsicPAX1qktmaYk6Thk8G
+      GEBRAUCHTWAGEN_KEYCLOAK_VERIFY: false
     ports:
       - published: 8000
         target: 8000

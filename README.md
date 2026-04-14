@@ -29,7 +29,7 @@ uv run pytest
 ```
 
 Weitere kurze Team-Dokumentation liegt unter `docs/`, zum Beispiel zu Git,
-lokalem Setup, Tests und Troubleshooting.
+lokalem Setup, Tests, Keycloak und Troubleshooting.
 
 ## Lokales TLS
 
@@ -87,10 +87,15 @@ Alternativ (ohne Bake) bleibt der bisherige Build nutzbar:
 docker build --tag gebrauchtwagen:0.1.0 .
 ```
 
-Container gegen die lokal laufende PostgreSQL-Datenbank starten:
+Container gegen die lokal laufende PostgreSQL-Datenbank und Keycloak aus dem
+Beispielprojekt starten:
 
 ```powershell
-docker run --rm --publish 8000:8000 --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal gebrauchtwagen:trixie
+docker run --rm `
+  --publish 8000:8000 `
+  --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal `
+  --env GEBRAUCHTWAGEN_KEYCLOAK_HOST=host.docker.internal `
+  gebrauchtwagen:trixie
 ```
 
 Im Container lauscht die App auf `0.0.0.0:8000`. Der Datenbank-Host kann ueber
@@ -116,3 +121,28 @@ docker compose down
 ```
 
 Die App ist im Compose-Setup unter `http://127.0.0.1:8000` erreichbar.
+
+## Keycloak / OIDC
+
+Fuer den Mindestnachweis wird die Keycloak-Konfiguration aus dem Beispielprojekt
+verwendet:
+
+- Realm: `python`
+- Client: `python-client`
+- benoetigte Client-Rolle fuer `POST /gebrauchtwagen`: `admin`
+
+Keycloak kann mit der uebernommenen Compose-Vorlage gestartet werden, wenn die
+Named Volumes `kc_data` und `kc_tls` gemaess Beispielprojekt eingerichtet sind:
+
+```powershell
+docker compose -f extras\compose\keycloak\compose.yml up -d
+```
+
+Ein Token fuer den Beispielbenutzer `admin` kann ueber die API abgeholt werden:
+
+```powershell
+$body = @{ username = "admin"; password = "p" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri https://127.0.0.1:8443/auth/token -ContentType "application/json" -Body $body -SkipCertificateCheck
+```
+
+Weitere Details stehen in `docs/keycloak.md`.
