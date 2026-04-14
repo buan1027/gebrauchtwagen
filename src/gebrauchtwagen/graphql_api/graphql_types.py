@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Any, cast
+from typing import cast
 
 import strawberry
 
