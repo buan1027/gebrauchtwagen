@@ -14,7 +14,7 @@ from .base import Base
 from .enums import Fahrzeugklasse, Kraftstoffart
 
 if TYPE_CHECKING:
-    from .Hauptuntersuchung import Hauptuntersuchung
+    from .hauptuntersuchung import Hauptuntersuchung
     from .schaden import Schaden
     from .standort import Standort
 

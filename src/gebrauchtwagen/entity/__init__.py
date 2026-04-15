@@ -2,14 +2,14 @@
 
 from .base import Base
 from .gebrauchtwagen import Gebrauchtwagen
-from .Hauptuntersuchung import Hauptuntersuchung
+from .hauptuntersuchung import Hauptuntersuchung
 from .schaden import Schaden
 from .standort import Standort
 
 __all__ = [
-	"Base",
-	"Gebrauchtwagen",
-	"Standort",
-	"Schaden",
-	"Hauptuntersuchung",
+    "Base",
+    "Gebrauchtwagen",
+    "Hauptuntersuchung",
+    "Schaden",
+    "Standort",
 ]

@@ -5,7 +5,7 @@ from __future__ import annotations
 import enum
 
 
-class Kraftstoffart(str, enum.Enum):
+class Kraftstoffart(enum.StrEnum):
     """Kraftstoffart eines Fahrzeugs."""
 
     BENZIN = "BENZIN"
@@ -16,7 +16,7 @@ class Kraftstoffart(str, enum.Enum):
     WASSERSTOFF = "WASSERSTOFF"
 
 
-class Fahrzeugklasse(str, enum.Enum):
+class Fahrzeugklasse(enum.StrEnum):
     """Fahrzeugklasse eines Fahrzeugs."""
 
     KLEINWAGEN = "KLEINWAGEN"

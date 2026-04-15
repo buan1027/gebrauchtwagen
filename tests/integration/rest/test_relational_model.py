@@ -13,7 +13,9 @@ def test_relational_model_contains_aggregate_relationships() -> None:
         table_names
     )
 
-    standort_fk = {fk["referred_table"] for fk in inspector.get_foreign_keys("standort")}
+    standort_fk = {
+        fk["referred_table"] for fk in inspector.get_foreign_keys("standort")
+    }
     schaden_fk = {fk["referred_table"] for fk in inspector.get_foreign_keys("schaden")}
     hauptuntersuchung_fk = {
         fk["referred_table"] for fk in inspector.get_foreign_keys("hauptuntersuchung")
