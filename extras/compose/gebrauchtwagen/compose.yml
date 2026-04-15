@@ -25,7 +25,7 @@ include:
 
 services:
   app:
-    image: gebrauchtwagen:0.1.0
+    image: gebrauchtwagen:hardened
     depends_on:
       db:
         condition: service_healthy

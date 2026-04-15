@@ -112,9 +112,8 @@ Hardened-Hauptvariante bauen:
 docker buildx bake hardened
 ```
 
-Das Target `hardened` erzeugt die Tags `gebrauchtwagen:0.1.0` und
-`gebrauchtwagen:hardened`. Das Compose-Setup verwendet `gebrauchtwagen:0.1.0`
-als stabilen lokalen Standard-Tag.
+Das Target `hardened` erzeugt den Tag `gebrauchtwagen:hardened`. Das
+Compose-Setup verwendet diese hardened-Variante als lokalen Standard.
 
 Trixie-Variante bauen:
 
@@ -131,7 +130,7 @@ docker buildx bake alpine
 Alternativ (ohne Bake) bleibt der bisherige Build nutzbar:
 
 ```powershell
-docker build --tag gebrauchtwagen:0.1.0 .
+docker build --tag gebrauchtwagen:hardened .
 ```
 
 Container gegen die lokal laufende PostgreSQL-Datenbank und Keycloak aus dem
@@ -142,7 +141,7 @@ docker run --rm `
   --publish 8000:8000 `
   --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal `
   --env GEBRAUCHTWAGEN_KEYCLOAK_HOST=host.docker.internal `
-  gebrauchtwagen:0.1.0
+  gebrauchtwagen:hardened
 ```
 
 Im Container lauscht die App auf `0.0.0.0:8000`. Der Datenbank-Host kann ueber
@@ -157,7 +156,7 @@ Die PostgreSQL-Datenbank wird dabei ueber `backend` automatisch mitgestartet;
 ein separater Start von `extras\compose\postgres\compose.yml` ist fuer diesen
 App-Stack nicht notwendig.
 
-Voraussetzung ist, dass das Image `gebrauchtwagen:0.1.0` lokal gebaut wurde.
+Voraussetzung ist, dass das Image `gebrauchtwagen:hardened` lokal gebaut wurde.
 
 ```powershell
 cd extras\compose\gebrauchtwagen

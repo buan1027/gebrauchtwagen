@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker build --tag gebrauchtwagen:0.1.0 --tag gebrauchtwagen:hardened .
+# Aufruf:   docker build --tag gebrauchtwagen:hardened .
 #               ggf. --no-cache
 #
 #           Windows:   Get-Content Dockerfile | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian

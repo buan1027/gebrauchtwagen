@@ -31,7 +31,7 @@ target "base" {
 target "hardened" {
   inherits = ["base"]
   dockerfile = "Dockerfile"
-  tags = ["gebrauchtwagen:0.1.0", "gebrauchtwagen:hardened"]
+  tags = ["gebrauchtwagen:hardened"]
 }
 
 target "trixie" {
