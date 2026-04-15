@@ -31,6 +31,47 @@ uv run pytest
 Weitere kurze Team-Dokumentation liegt unter `docs/`, zum Beispiel zu Git,
 lokalem Setup, Tests, Keycloak und Troubleshooting.
 
+## OWASP Dependency-Check
+
+OWASP steht fuer Open Worldwide Application Security Project. Fuer dieses
+Projekt ist vor allem der OWASP Dependency-Check relevant: Das Werkzeug gleicht
+die verwendeten Drittanbieter-Abhaengigkeiten mit bekannten CVE-Eintraegen ab.
+Damit entsteht ein nachvollziehbarer Sicherheitsnachweis fuer den Python-
+Server, ob eingesetzte Bibliotheken bekannte Schwachstellen enthalten.
+
+Der Ablauf basiert auf der Vorlage aus dem Beispielprojekt und ist auf das
+Gebrauchtwagen-Repository angepasst:
+
+- Skript: `extras\dependency-check.py`
+- Suppression-Datei: `extras\dependency-check-suppression.xml`
+- Scan-Ziel: dieses Repository mit `pyproject.toml` und `uv.lock`
+- Bericht: `reports\dependency-check\dependency-check-report.html`
+
+Ein Ausfuehrungsnachweis und Hinweise zum aktuellen Lauf stehen in
+`docs\dependency-check.md`.
+
+Voraussetzung ist eine lokale Installation von OWASP Dependency-Check. Das
+Skript sucht zuerst `dependency-check.bat` im `PATH` und verwendet unter
+Windows sonst den Kurs-Pfad `C:\Zimmermann\dependency-check\bin`.
+
+Optional kann ein NVD API Key gesetzt werden, damit der Datenabgleich schneller
+und stabiler laeuft:
+
+```powershell
+$env:NVD_API_KEY = "<dein-api-key>"
+```
+
+Ausfuehrung:
+
+```powershell
+uv run extras\dependency-check.py
+```
+
+Die Suppression-Datei ist aktuell leer, weil fuer dieses Projekt noch keine
+begruendete False-Positive-Ausnahme benoetigt wird. Falls spaeter eine
+Suppression notwendig ist, muss sie dort mit Notiz, CVE und betroffenem Package
+dokumentiert werden.
+
 ## Lokales TLS
 
 Die Zertifikatsdateien werden bewusst **nicht** ins Repository eingecheckt.

@@ -21,6 +21,7 @@ tests/**/__pycache__
 .coverage
 report.html
 dependency-check-report.html
+reports/dependency-check/
 
 *.pyc
 *.xlsx
