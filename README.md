@@ -12,9 +12,11 @@ Ein FastAPI-Projekt fuer eine Gebrauchtwagen-Anwendung.
 
 ```powershell
 uv sync
-docker compose -f extras\compose\postgres\compose.yml up -d db
 uv run gebrauchtwagen
 ```
+
+Fuer den Container-Start von App und Datenbank siehe
+[Docker Compose fuer App und Datenbank](#docker-compose-fuer-app-und-datenbank).
 
 ## Browser
 
@@ -24,8 +26,15 @@ Im Browser kannst du danach `https://127.0.0.1:8443` und
 ## Tests
 
 ```powershell
-docker compose -f extras\compose\postgres\compose.yml up -d db
 uv run pytest
+```
+
+Die Integrationstests erwarten eine erreichbare PostgreSQL-Datenbank. Wenn nur
+die Datenbank fuer lokale Tests gebraucht wird, kann sie separat gestartet
+werden:
+
+```powershell
+docker compose -f extras\compose\postgres\compose.yml up -d db
 ```
 
 Weitere kurze Team-Dokumentation liegt unter `docs/`, zum Beispiel zu Git,
@@ -91,11 +100,15 @@ Die Pfade dafuer stehen in `src/gebrauchtwagen/config/application.toml`.
 Die Anwendung erwartet lokal eine PostgreSQL-Datenbank mit den Werten aus
 `src/gebrauchtwagen/config/application.toml`.
 
-Starten kannst du sie mit:
+Wenn nur die Datenbank fuer lokale Entwicklung oder Tests gebraucht wird, kannst
+du sie separat starten mit:
 
 ```powershell
 docker compose -f extras\compose\postgres\compose.yml up -d db
 ```
+
+Beim App-Compose-Stack wird diese Datenbank automatisch ueber `backend`
+eingebunden und muss nicht separat gestartet werden.
 
 ## Docker-Image fuer den Appserver
 
