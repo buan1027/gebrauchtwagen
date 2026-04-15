@@ -16,9 +16,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker build --tag gebrauchtwagen:0.1.0 .
-#           docker run --rm --publish 8000:8000 --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal gebrauchtwagen:0.1.0
+# Aufruf:   docker build --tag gebrauchtwagen:0.1.0 --tag gebrauchtwagen:hardened .
+#               ggf. --no-cache
+#
+#           Windows:   Get-Content Dockerfile | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
+#           macOS:     cat Dockerfile | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
+#
+#           docker debug gebrauchtwagen:hardened
+#           docker scout sbom gebrauchtwagen:hardened
+#           docker scout cves gebrauchtwagen:hardened
+#           docker save gebrauchtwagen:hardened > gebrauchtwagen-hardened.tar
 
+# https://docs.docker.com/engine/reference/builder/#syntax
+# https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md
+# https://hub.docker.com/r/docker/dockerfile
+# https://docs.docker.com/build/building/multi-stage
+# https://docs.docker.com/dhi
+# https://testdriven.io/blog/docker-best-practices
+# https://containers.gitbook.io/build-containers-the-hard-way
+# https://wiki.debian.org/DebianReleases
+# https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile
+# https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
+# https://www.saaspegasus.com/guides/uv-deep-dive
+
+# ARG: "build-time" Variable
+# ENV: "build-time" und "runtime" Variable
 ARG PYTHON_MAIN_VERSION=3.14
 ARG PYTHON_VERSION=${PYTHON_MAIN_VERSION}.3
 ARG UV_VERSION=0.10.11
@@ -26,49 +48,51 @@ ARG UV_VERSION=0.10.11
 # ------------------------------------------------------------------------------
 # S t a g e   b u i l d e r
 # ------------------------------------------------------------------------------
-FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_MAIN_VERSION}-trixie-slim AS builder
+FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_MAIN_VERSION}-dhi AS builder
 
 WORKDIR /opt/app
 
+# Kein Python-Download erforderlich.
+# https://github.com/astral-sh/uv/issues/8635#issuecomment-2759670742
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
-    UV_PYTHON_DOWNLOADS=0
+    UV_PYTHON_DOWNLOADS=0 \
+    UV_NO_MANAGED_PYTHON=true \
+    UV_SYSTEM_PYTHON=true
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv venv
+    ["/usr/local/bin/uv", "venv"]
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-default-groups --no-editable
+    ["/usr/local/bin/uv", "sync", "--frozen", "--no-install-project", "--no-default-groups", "--no-editable"]
 
 COPY LICENSE README.md pyproject.toml uv.lock ./
 COPY src ./src
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-default-groups --no-editable
+    ["/usr/local/bin/uv", "sync", "--frozen", "--no-default-groups", "--no-editable"]
 
 # ------------------------------------------------------------------------------
 # S t a g e   f i n a l
 # ------------------------------------------------------------------------------
-FROM python:${PYTHON_VERSION}-slim-trixie AS final
+FROM dhi.io/python:${PYTHON_VERSION}-debian13 AS final
 
 LABEL org.opencontainers.image.title="gebrauchtwagen" \
-    org.opencontainers.image.description="Appserver fuer die Gebrauchtwagen-API" \
+    org.opencontainers.image.description="Appserver fuer die Gebrauchtwagen-API (hardened)" \
     org.opencontainers.image.version="0.1.0" \
-    org.opencontainers.image.licenses="GPL-3.0-or-later"
+    org.opencontainers.image.licenses="GPL-3.0-or-later" \
+    org.opencontainers.image.authors="Gebrauchtwagen-Team"
 
 WORKDIR /opt/app
 
-RUN groupadd --gid 10000 app \
-    && useradd --uid 10000 --gid app --shell /bin/bash --no-create-home app \
-    && chown -R app:app /opt/app
+# User "nonroot" statt User "root"
+USER nonroot
 
-USER app
-
-COPY --from=builder --chown=app:app /opt/app ./
+COPY --from=builder --chown=nonroot:nonroot /opt/app ./
 
 ENV PATH="/opt/app/.venv/bin:$PATH" \
     GEBRAUCHTWAGEN_SERVER_HOST=0.0.0.0 \

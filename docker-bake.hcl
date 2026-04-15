@@ -1,10 +1,37 @@
+# Copyright (C) 2024 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker buildx bake [hardened|trixie|alpine]
+
+# https://docs.docker.com/build/bake/introduction
+# https://docs.docker.com/build/bake/reference
+
 group "default" {
-  targets = ["trixie"]
+  targets = ["hardened"]
+  # targets = ["hardened", "trixie", "alpine"]
 }
 
 target "base" {
   context = "."
   platforms = ["linux/amd64"]
+}
+
+target "hardened" {
+  inherits = ["base"]
+  dockerfile = "Dockerfile"
+  tags = ["gebrauchtwagen:0.1.0", "gebrauchtwagen:hardened"]
 }
 
 target "trixie" {

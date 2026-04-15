@@ -101,22 +101,28 @@ docker compose -f extras\compose\postgres\compose.yml up -d db
 
 Die Docker-Builds basieren auf Varianten aus dem Beispielprojekt.
 
-- `Dockerfile.trixie`: Standardvariante fuer Team-Entwicklung und CI (empfohlen)
+- `Dockerfile`: Hardened-Hauptvariante analog zum Beispielprojekt
+- `Dockerfile.trixie`: Trixie-Variante fuer Team-Entwicklung und CI
 - `Dockerfile.alpine`: zusaetzliche, schlanke Variante
-- `docker-bake.hcl`: zentrale Build-Definition fuer beide Targets
+- `docker-bake.hcl`: zentrale Build-Definition fuer die Build-Targets
 
-Die Variante `hardened` wird aktuell bewusst nicht uebernommen, weil der
-zusatzliche Hardening-Aufwand (z. B. restriktivere Laufzeitparameter und
-projektweite Security-Ausnahmen) fuer den aktuellen Projektstand noch keinen
-Mehrwert gegenueber `trixie` liefert.
+Hardened-Hauptvariante bauen:
 
-Empfohlenes Standard-Image bauen:
+```powershell
+docker buildx bake hardened
+```
+
+Das Target `hardened` erzeugt die Tags `gebrauchtwagen:0.1.0` und
+`gebrauchtwagen:hardened`. Das Compose-Setup verwendet `gebrauchtwagen:0.1.0`
+als stabilen lokalen Standard-Tag.
+
+Trixie-Variante bauen:
 
 ```powershell
 docker buildx bake trixie
 ```
 
-Zusaetzliche Variante bauen:
+Alpine-Variante bauen:
 
 ```powershell
 docker buildx bake alpine
@@ -136,7 +142,7 @@ docker run --rm `
   --publish 8000:8000 `
   --env GEBRAUCHTWAGEN_DB_HOST=host.docker.internal `
   --env GEBRAUCHTWAGEN_KEYCLOAK_HOST=host.docker.internal `
-  gebrauchtwagen:trixie
+  gebrauchtwagen:0.1.0
 ```
 
 Im Container lauscht die App auf `0.0.0.0:8000`. Der Datenbank-Host kann ueber
@@ -147,6 +153,9 @@ als Standard `db` vorgesehen.
 
 Das Compose-Setup folgt der Struktur aus dem Beispielprojekt: `backend` bindet
 die Infrastruktur ein, `gebrauchtwagen` startet zusaetzlich den Appserver.
+Die PostgreSQL-Datenbank wird dabei ueber `backend` automatisch mitgestartet;
+ein separater Start von `extras\compose\postgres\compose.yml` ist fuer diesen
+App-Stack nicht notwendig.
 
 Voraussetzung ist, dass das Image `gebrauchtwagen:0.1.0` lokal gebaut wurde.
 

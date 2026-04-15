@@ -1,10 +1,50 @@
 # syntax=docker.io/docker/dockerfile-upstream:1.22.0
 # check=error=true
 
+# Copyright (C) 2023 - present, Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker build --tag gebrauchtwagen:0.1.0 --tag gebrauchtwagen:trixie -f Dockerfile.trixie .
+#               ggf. --no-cache
+#
+#           Windows:   Get-Content Dockerfile.trixie | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
+#           macOS:     cat Dockerfile.trixie | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
+#
+#           docker debug gebrauchtwagen:trixie
+#           docker save gebrauchtwagen:trixie > gebrauchtwagen-trixie.tar
+
+# https://docs.docker.com/engine/reference/builder/#syntax
+# https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md
+# https://hub.docker.com/r/docker/dockerfile
+# https://docs.docker.com/build/building/multi-stage
+# https://testdriven.io/blog/docker-best-practices
+# https://containers.gitbook.io/build-containers-the-hard-way
+# https://wiki.debian.org/DebianReleases
+# https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile
+# https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
+# https://www.saaspegasus.com/guides/uv-deep-dive
+
+# ARG: "build-time" Variable
+# ENV: "build-time" und "runtime" Variable
 ARG PYTHON_MAIN_VERSION=3.14
 ARG PYTHON_VERSION=${PYTHON_MAIN_VERSION}.3
 ARG UV_VERSION=0.10.11
 
+# ------------------------------------------------------------------------------
+# S t a g e   b u i l d e r
+# ------------------------------------------------------------------------------
 FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_MAIN_VERSION}-trixie-slim AS builder
 
 WORKDIR /opt/app
@@ -29,12 +69,16 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-default-groups --no-editable
 
+# ------------------------------------------------------------------------------
+# S t a g e   f i n a l
+# ------------------------------------------------------------------------------
 FROM python:${PYTHON_VERSION}-slim-trixie AS final
 
 LABEL org.opencontainers.image.title="gebrauchtwagen" \
     org.opencontainers.image.description="Appserver fuer die Gebrauchtwagen-API (trixie)" \
     org.opencontainers.image.version="0.1.0" \
-    org.opencontainers.image.licenses="GPL-3.0-or-later"
+    org.opencontainers.image.licenses="GPL-3.0-or-later" \
+    org.opencontainers.image.authors="Gebrauchtwagen-Team"
 
 WORKDIR /opt/app
 
