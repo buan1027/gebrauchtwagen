@@ -8,6 +8,26 @@ from pytest import mark
 from gebrauchtwagen.main import app
 
 AUTH_HEADERS = {"Authorization": "Bearer integration-test-token"}
+AUTH_HEADERS_WITHOUT_ROLE = {
+    "Authorization": "Bearer integration-test-token-without-role",
+}
+
+
+def create_payload(fin: str = "WVWZZZ1JZXW000001") -> dict[str, object | None]:
+    """Erzeuge einen gueltigen Payload fuer POST-Tests."""
+    return {
+        "fin": fin,
+        "marke": "Audi",
+        "modell": "A3",
+        "baujahr": 2021,
+        "kilometerstand": 25000,
+        "kraftstoffart": "BENZIN",
+        "fahrzeugklasse": "KOMPAKTKLASSE",
+        "ausstattung": {},
+        "erstzulassung": "2021-03-15",
+        "schadenfrei": True,
+        "beschreibung_url": None,
+    }
 
 
 @mark.rest
@@ -101,22 +121,36 @@ def test_create_gebrauchtwagen_requires_bearer_token() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/gebrauchtwagen",
-            json={
-                "fin": "WVWZZZ1JZXW000001",
-                "marke": "Audi",
-                "modell": "A3",
-                "baujahr": 2021,
-                "kilometerstand": 25000,
-                "kraftstoffart": "BENZIN",
-                "fahrzeugklasse": "KOMPAKTKLASSE",
-                "ausstattung": {},
-                "erstzulassung": "2021-03-15",
-                "schadenfrei": True,
-                "beschreibung_url": None,
-            },
+            json=create_payload(),
         )
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
+
+
+@mark.rest
+@mark.post_request
+def test_create_gebrauchtwagen_rejects_invalid_bearer_token() -> None:
+    with TestClient(app) as client:
+        response = client.post(
+            "/gebrauchtwagen",
+            headers={"Authorization": "Bearer invalid-token"},
+            json=create_payload(),
+        )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+
+
+@mark.rest
+@mark.post_request
+def test_create_gebrauchtwagen_requires_admin_role() -> None:
+    with TestClient(app) as client:
+        response = client.post(
+            "/gebrauchtwagen",
+            headers=AUTH_HEADERS_WITHOUT_ROLE,
+            json=create_payload(),
+        )
+
+    assert response.status_code == HTTPStatus.FORBIDDEN
 
 
 @mark.rest

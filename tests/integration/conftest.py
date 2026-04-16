@@ -28,6 +28,8 @@ def accept_integration_test_token(monkeypatch: pytest.MonkeyPatch) -> None:
     def get_user_from_token(token: str) -> User:
         if token == "integration-test-token":  # noqa: S105
             return User(username="integration-test", roles=[Role.ADMIN])
+        if token == "integration-test-token-without-role":  # noqa: S105
+            return User(username="integration-test", roles=[])
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     monkeypatch.setattr(
