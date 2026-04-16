@@ -44,9 +44,14 @@ app.include_router(graphql_router, prefix="/graphql")
 def http_exception_handler(_request: Request, err: StarletteHTTPException) -> Response:
     """Einheitliche Fehlerantwort fuer HTTP-Fehler."""
     if err.status_code == status.HTTP_404_NOT_FOUND:
+        detail = (
+            f"Der Pfad wurde nicht gefunden: {_request.url.path}"
+            if err.detail == "Not Found"
+            else err.detail
+        )
         return create_problem_details(
             status_code=err.status_code,
-            detail=f"Der Pfad wurde nicht gefunden: {_request.url.path}",
+            detail=detail,
         )
     return create_problem_details(status_code=err.status_code, detail=err.detail)
 
