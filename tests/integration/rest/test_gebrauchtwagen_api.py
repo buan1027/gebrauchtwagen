@@ -254,6 +254,66 @@ def test_persisted_gebrauchtwagen_survives_new_client() -> None:
 
 
 @mark.rest
+@mark.get_request
+def test_get_gebrauchtwagen_by_id_returns_gebrauchtwagen() -> None:
+    with TestClient(app) as client:
+        create_response = client.post(
+            "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
+            json={
+                "fin": "WVWZZZ1JZXW000003",
+                "marke": "BMW",
+                "modell": "3er",
+                "baujahr": 2019,
+                "kilometerstand": 45000,
+                "kraftstoffart": "BENZIN",
+                "fahrzeugklasse": "MITTELKLASSE",
+                "ausstattung": {},
+                "erstzulassung": "2019-09-10",
+                "schadenfrei": True,
+                "beschreibung_url": None,
+            },
+        )
+
+        get_response = client.get("/gebrauchtwagen/1")
+
+    assert create_response.status_code == HTTPStatus.CREATED
+    assert get_response.status_code == HTTPStatus.OK
+    item = get_response.json()
+    assert isinstance(item.pop("erzeugt"), str)
+    assert isinstance(item.pop("aktualisiert"), str)
+    assert item == {
+        "id": 1,
+        "version": 1,
+        "fin": "WVWZZZ1JZXW000003",
+        "marke": "BMW",
+        "modell": "3er",
+        "baujahr": 2019,
+        "kilometerstand": 45000,
+        "kraftstoffart": "BENZIN",
+        "fahrzeugklasse": "MITTELKLASSE",
+        "ausstattung": {},
+        "erstzulassung": "2019-09-10",
+        "schadenfrei": True,
+        "beschreibung_url": None,
+    }
+
+
+@mark.rest
+@mark.get_request
+def test_get_gebrauchtwagen_by_id_returns_404_for_unknown_id() -> None:
+    with TestClient(app) as client:
+        response = client.get("/gebrauchtwagen/999")
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.headers["content-type"].startswith("application/problem+json")
+    body = response.json()
+    assert body["title"] == "Not Found"
+    assert body["status_code"] == HTTPStatus.NOT_FOUND
+    assert "Gebrauchtwagen mit ID 999 nicht gefunden" in body["detail"]
+
+
+@mark.rest
 @mark.health
 def test_health_reports_connected_database(monkeypatch) -> None:
     monkeypatch.setattr(
