@@ -44,6 +44,12 @@ services:
       GEBRAUCHTWAGEN_KEYCLOAK_CLIENT_ID: python-client
       GEBRAUCHTWAGEN_KEYCLOAK_CLIENT_SECRET: kysQimBCxPWwsicPAX1qktmaYk6Thk8G
       GEBRAUCHTWAGEN_KEYCLOAK_VERIFY: false
+      GEBRAUCHTWAGEN_SEED_CSV: /csv/gebrauchtwagen.csv
+    volumes:
+      - type: bind
+        source: gebrauchtwagen.csv
+        target: /csv/gebrauchtwagen.csv
+        read_only: true
     ports:
       - published: 8000
         target: 8000

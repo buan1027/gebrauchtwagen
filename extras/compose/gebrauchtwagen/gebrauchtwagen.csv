@@ -1,0 +1,4 @@
+fin;marke;modell;baujahr;kilometerstand;kraftstoffart;fahrzeugklasse;ausstattung;erstzulassung;schadenfrei;beschreibung_url
+WVWZZZ1JZXW100001;VW;Golf;2020;42500;BENZIN;KOMPAKTKLASSE;"{""navi"": true, ""sitzheizung"": true}";2020-05-15;true;
+WBA8E31050K100002;BMW;320d Touring;2019;78500;DIESEL;KOMBI;"{""assistenz"": {""acc"": true}, ""anhaengerkupplung"": true}";2019-09-20;false;https://example.invalid/gebrauchtwagen/bmw-320d
+WME4533911K100003;Smart;EQ fortwo;2022;11800;ELEKTRO;KLEINWAGEN;"{""reichweite_km"": 145, ""wallbox_kabel"": true}";2022-03-10;true;

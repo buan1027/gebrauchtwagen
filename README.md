@@ -183,6 +183,11 @@ docker compose down
 ```
 
 Die App ist im Compose-Setup unter `http://127.0.0.1:8000` erreichbar.
+Beim Start laedt der App-Container optional Beispieldaten aus
+`extras\compose\gebrauchtwagen\gebrauchtwagen.csv`. Die Datei wird im Compose-
+Setup nach `/csv/gebrauchtwagen.csv` gemountet und ueber
+`GEBRAUCHTWAGEN_SEED_CSV` aktiviert. Bereits vorhandene Fahrzeuge werden anhand
+der FIN nicht doppelt angelegt.
 
 ## Keycloak / OIDC
 

@@ -13,6 +13,7 @@ from gebrauchtwagen.config.db import (
     create_tables,
     engine,
 )
+from gebrauchtwagen.config.seed import seed_database_from_environment
 from gebrauchtwagen.graphql_api import graphql_router
 from gebrauchtwagen.problem_details import create_problem_details
 from gebrauchtwagen.router.gebrauchtwagen_router import router as gebrauchtwagen_router
@@ -26,6 +27,7 @@ async def lifespan(_app: FastAPI):  # noqa: RUF029
     """Beim Start DB pruefen und Tabellen erzeugen, beim Ende Engine freigeben."""
     check_database_connection()
     create_tables()
+    seed_database_from_environment()
     yield
     engine.dispose()
 
