@@ -1,7 +1,7 @@
 meta {
-  name: POST gebrauchtwagen als Admin
+  name: POST gebrauchtwagen ohne Token
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
@@ -13,34 +13,24 @@ post {
 headers {
   Content-Type: application/json
   Accept: application/json
-  Authorization: Bearer {{accessToken}}
-}
-
-script:pre-request {
-  bru.setVar("fin", `WAU${Date.now()}`);
 }
 
 body:json {
   {
-    "fin": "{{fin}}",
+    "fin": "WAUZZZF3XMN900102",
     "marke": "Audi",
     "modell": "A3",
     "baujahr": 2021,
     "kilometerstand": 25000,
     "kraftstoffart": "BENZIN",
     "fahrzeugklasse": "KOMPAKTKLASSE",
-    "ausstattung": {
-      "navi": true,
-      "sitzheizung": true
-    },
+    "ausstattung": {},
     "erstzulassung": "2021-03-15",
     "schadenfrei": true,
-    "beschreibung_url": "https://beispiel.de/fahrzeuge/a3"
+    "beschreibung_url": null
   }
 }
 
 assert {
-  res.status: eq 201
-  res.body.fin: isString
-  res.body.marke: eq Audi
+  res.status: eq 401
 }

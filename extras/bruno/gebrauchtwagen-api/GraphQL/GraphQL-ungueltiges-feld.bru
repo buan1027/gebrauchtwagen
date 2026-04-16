@@ -1,0 +1,31 @@
+meta {
+  name: GraphQL ungueltiges Feld
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:graphql {
+  query {
+    gebrauchtwagen {
+      id
+      fin
+      nichtVorhanden
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.errors: isArray
+}

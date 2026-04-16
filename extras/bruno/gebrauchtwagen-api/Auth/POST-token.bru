@@ -21,3 +21,14 @@ body:json {
     "password": "p"
   }
 }
+
+script:post-response {
+  bru.setEnvVar("accessToken", res.body.token);
+}
+
+assert {
+  res.status: eq 200
+  res.body.token: isString
+  res.body.rollen: isArray
+  res.body.rollen[0]: eq ADMIN
+}
