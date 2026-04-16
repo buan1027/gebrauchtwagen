@@ -22,6 +22,12 @@ def list_gebrauchtwagen() -> list[GebrauchtwagenResponseDTO]:
     return gebrauchtwagen_service.list_gebrauchtwagen()
 
 
+@router.get("/{gebrauchtwagen_id}", response_model=GebrauchtwagenResponseDTO)
+def get_gebrauchtwagen_by_id(gebrauchtwagen_id: int) -> GebrauchtwagenResponseDTO:
+    """Liefere einen Gebrauchtwagen anhand seiner ID."""
+    return gebrauchtwagen_service.get_gebrauchtwagen_by_id(gebrauchtwagen_id)
+
+
 @router.post(
     "",
     dependencies=[Depends(RolesRequired(Role.ADMIN))],
