@@ -21,7 +21,8 @@ und angepasst:
 - Suppression-Datei: `extras\dependency-check-suppression.xml`
 - Scan-Ziel: Repository-Root mit `pyproject.toml` und `uv.lock`
 - Berichtsziel: `reports\dependency-check\`
-- NVD API Key: optional ueber Umgebungsvariable `NVD_API_KEY`
+- NVD API Key: empfohlen ueber Umgebungsvariable `NVD_API_KEY`; alternativ
+  lokal im Skript als `nvd_api_key`
 
 Die Suppression-Datei ist bewusst leer. Es gibt aktuell keine begruendete
 False-Positive-Ausnahme fuer dieses Projekt.
@@ -39,13 +40,22 @@ $env:NVD_API_KEY = "<dein-api-key>"
 uv run extras\dependency-check.py
 ```
 
-## Nachweis vom 15.04.2026
+Alternativ kann der eigene Key analog zum Beispielprojekt lokal direkt in
+`extras\dependency-check.py` als Wert von `nvd_api_key` eingetragen werden. Vor
+einem Commit muss der Wert wieder entfernt werden. Die Umgebungsvariable hat
+Vorrang, falls beide Varianten gesetzt sind.
 
-Installierte Version vor dem Update:
+## Nachweis vom 16.04.2026
+
+Installierte Version:
 
 ```text
-Dependency-Check Core version 12.2.0
+Dependency-Check Core version 12.2.1
 ```
+
+Fuer die Ausfuehrung wurde ein eigener NVD API Key lokal ueber die
+Umgebungsvariable `NVD_API_KEY` bereitgestellt. Der Key wird nicht im Repository
+gespeichert.
 
 Ausgefuehrter Befehl:
 
@@ -56,52 +66,17 @@ uv run extras\dependency-check.py
 Ergebnis:
 
 ```text
-[INFO] Checking for updates
-[WARN] An NVD API Key was not provided
-[ERROR] Error updating the NVD Data
-Cannot deserialize value of type `java.time.ZonedDateTime` from String
-"2026-04-15T15:21:48.700955Z"
-[ERROR] Unable to continue dependency-check analysis.
+[INFO] Check for updates complete
+[INFO] Analysis Started
+[INFO] Analysis Complete (5 seconds)
+[INFO] Writing HTML report to:
+C:\Users\anna\gebrauchtwagen\reports\dependency-check\dependency-check-report.html
+[INFO] Writing JSON report to:
+C:\Users\anna\gebrauchtwagen\reports\dependency-check\dependency-check-report.json
 ```
 
-Der Ablauf ist damit im Projekt vorhanden und wurde gestartet. Ein vollstaendiger
-Bericht konnte mit Dependency-Check `12.2.0` in dieser Umgebung noch nicht
-erzeugt werden, weil die Aktualisierung der NVD-Daten vor der Projektanalyse
-abbricht. Fuer den naechsten erfolgreichen Lauf sollte ein NVD API Key gesetzt
-und, falls der Parse-Fehler weiter besteht, die lokale Dependency-Check-
-Installation aktualisiert werden.
-
-Ein zweiter Lauf mit einem temporaer gesetzten NVD API Key aus dem
-Beispielprojekt beseitigte die Warnung zum fehlenden API Key, scheiterte aber
-weiterhin an demselben NVD-Zeitstempel-Parse-Fehler. Damit ist der fehlende Key
-nicht die Ursache des aktuellen Abbruchs.
-
-Anschliessend wurde die lokale Installation unter `C:\Zimmermann` reversibel von
-Dependency-Check `12.2.0` auf `12.2.1` aktualisiert. Die vorherige Installation
-liegt als Backup unter `C:\Zimmermann\dependency-check-12.2.0`.
-
-Installierte Version nach dem Update:
-
-```text
-Dependency-Check Core version 12.2.1
-```
-
-Auch mit `12.2.1` scheitert der Lauf weiterhin beim Aktualisieren der NVD-Daten:
-
-```text
-Cannot deserialize value of type `java.time.ZonedDateTime` from String
-"2026-04-15T16:12:06.798407900Z"
-```
-
-Ein weiterer Lauf mit `12.2.1` und temporaer gesetztem NVD API Key scheiterte
-ebenfalls an demselben Zeitstempel-Parse-Fehler. Damit sind sowohl der fehlende
-API Key als auch die lokale Version `12.2.0` als alleinige Ursache
-ausgeschlossen.
-
-## Offene Rueckfrage
-
-Da der Fehler vor der eigentlichen Projektanalyse beim NVD-Datenupdate auftritt,
-wurde am 15.04.2026 eine Rueckfrage im ILIAS-Forum der Veranstaltung erstellt.
-Die Frage klaert, ob fuer die Veranstaltung ein bestimmter Workaround erwartet
-wird, zum Beispiel eine andere Dependency-Check-Version, ein vorbereiteter
-`dependency-check-data`-Cache oder eine alternative Konfiguration.
+Der vollstaendige Lauf wurde mit Dependency-Check `12.2.1` und eigenem NVD API
+Key erfolgreich ausgefuehrt. Die erzeugten Reports liegen lokal unter
+`reports\dependency-check\`. Dieses Verzeichnis ist in `.gitignore`
+ausgeschlossen, damit generierte Berichte nicht ins Repository eingecheckt
+werden.

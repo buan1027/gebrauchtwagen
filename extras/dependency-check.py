@@ -16,6 +16,10 @@ DATA_DIR = Path(
 )
 SUPPRESSION_FILE = ROOT / "extras" / "dependency-check-suppression.xml"
 
+# Analog zum Beispielprojekt kann hier lokal ein eigener NVD API Key eingetragen
+# werden. Fuer Commits bleibt der Wert leer; bevorzugt wird NVD_API_KEY.
+nvd_api_key = ""
+
 
 def find_dependency_check() -> Path:
     """Find dependency-check in PATH or in the course tooling directory."""
@@ -88,9 +92,9 @@ def main() -> None:
         "--disableYarnAudit",
     ]
 
-    nvd_api_key = os.environ.get("NVD_API_KEY")
-    if nvd_api_key:
-        command.extend(["--nvdApiKey", nvd_api_key])
+    effective_nvd_api_key = os.environ.get("NVD_API_KEY") or nvd_api_key
+    if effective_nvd_api_key:
+        command.extend(["--nvdApiKey", effective_nvd_api_key])
 
     result = subprocess.run(command, check=False)  # noqa: S603
     if result.returncode != 0:
