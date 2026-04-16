@@ -35,6 +35,7 @@ dev = [
 
 [tool.ty.environment]
 python-version = "3.14"
+python = "./.venv"
 root = ["./src", "./tests"]
 
 [tool.pytest.ini_options]
