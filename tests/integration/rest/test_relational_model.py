@@ -24,3 +24,20 @@ def test_relational_model_contains_aggregate_relationships() -> None:
     assert standort_fk == {"gebrauchtwagen"}
     assert schaden_fk == {"gebrauchtwagen"}
     assert hauptuntersuchung_fk == {"gebrauchtwagen"}
+
+    standort_unique = {
+        tuple(unique_constraint["column_names"])
+        for unique_constraint in inspector.get_unique_constraints("standort")
+    }
+    schaden_unique = {
+        tuple(unique_constraint["column_names"])
+        for unique_constraint in inspector.get_unique_constraints("schaden")
+    }
+    hauptuntersuchung_unique = {
+        tuple(unique_constraint["column_names"])
+        for unique_constraint in inspector.get_unique_constraints("hauptuntersuchung")
+    }
+
+    assert ("gebrauchtwagen_id",) in standort_unique
+    assert ("gebrauchtwagen_id",) not in schaden_unique
+    assert ("gebrauchtwagen_id",) in hauptuntersuchung_unique

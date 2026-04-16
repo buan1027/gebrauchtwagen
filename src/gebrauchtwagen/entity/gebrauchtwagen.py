@@ -55,9 +55,9 @@ class Gebrauchtwagen(Base):
         default_factory=list,
         init=False,
     )
-    hauptuntersuchungen: Mapped[list[Hauptuntersuchung]] = relationship(
+    hauptuntersuchung: Mapped[Hauptuntersuchung | None] = relationship(
         back_populates="gebrauchtwagen",
         cascade="all, delete-orphan",
-        default_factory=list,
+        uselist=False,
         init=False,
     )

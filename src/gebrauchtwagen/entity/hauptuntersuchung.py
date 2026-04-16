@@ -1,4 +1,4 @@
-"""Entity fuer Hauptuntersuchungen eines Gebrauchtwagens."""
+"""Entity fuer die Hauptuntersuchung eines Gebrauchtwagens."""
 
 from __future__ import annotations
 
@@ -15,18 +15,18 @@ if TYPE_CHECKING:
 
 
 class Hauptuntersuchung(Base):
-    """Historie von Hauptuntersuchungen zu einem Fahrzeug."""
+    """Hauptuntersuchung zu einem Fahrzeug."""
 
     __tablename__ = "hauptuntersuchung"
 
     id: Mapped[int] = mapped_column(init=False, primary_key=True)
     gebrauchtwagen_id: Mapped[int] = mapped_column(
-        ForeignKey("gebrauchtwagen.id", ondelete="CASCADE")
+        ForeignKey("gebrauchtwagen.id", ondelete="CASCADE"), unique=True
     )
     datum: Mapped[date]
     prueforganisation: Mapped[str] = mapped_column(String(100))
     bestanden: Mapped[bool]
 
     gebrauchtwagen: Mapped[Gebrauchtwagen] = relationship(
-        back_populates="hauptuntersuchungen", init=False
+        back_populates="hauptuntersuchung", init=False
     )
