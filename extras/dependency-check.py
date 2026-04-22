@@ -15,6 +15,7 @@ DATA_DIR = Path(
     os.environ.get("DEPENDENCY_CHECK_DATA", "C:/Zimmermann/dependency-check-data")
 )
 SUPPRESSION_FILE = ROOT / "extras" / "dependency-check-suppression.xml"
+REQUIREMENTS_FILE = REPORT_DIR / "requirements.txt"
 
 # Analog zum Beispielprojekt kann hier lokal ein eigener NVD API Key eingetragen
 # werden. Fuer Commits bleibt der Wert leer; bevorzugt wird NVD_API_KEY.
@@ -44,18 +45,37 @@ def main() -> None:
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+    subprocess.run(  # noqa: S603
+        [
+            "uv",
+            "export",
+            "--frozen",
+            "--all-groups",
+            "--no-emit-project",
+            "--no-hashes",
+            "--no-annotate",
+            "--no-header",
+            "--format",
+            "requirements.txt",
+            "--output-file",
+            str(REQUIREMENTS_FILE),
+        ],
+        check=True,
+    )
+
     command = [
         str(script),
         "--project",
         PROJECT,
         "--scan",
-        str(ROOT),
+        str(REQUIREMENTS_FILE),
         "--suppression",
         str(SUPPRESSION_FILE),
         "--out",
         str(REPORT_DIR),
         "--data",
         str(DATA_DIR),
+        "--enableExperimental",
         "--format",
         "HTML",
         "--format",
