@@ -52,7 +52,7 @@ class TokenService:
             token_decoded: Final[Mapping[str, Any]] = self.keycloak.decode_token(
                 token=token,
             )
-        except JWException as err:
+        except (JWException, ValueError) as err:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from err
 
         username = str(token_decoded["preferred_username"])
@@ -67,7 +67,10 @@ class TokenService:
     def get_roles_from_token(self, token: str | Mapping[str, Any]) -> list[Role]:
         """Lies die Client-Rollen aus einem Keycloak-Token."""
         if isinstance(token, str):
-            token_decoded = self.keycloak.decode_token(token=token)
+            try:
+                token_decoded = self.keycloak.decode_token(token=token)
+            except (JWException, ValueError) as err:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from err
         else:
             token_decoded = token
 

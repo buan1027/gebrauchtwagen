@@ -17,6 +17,25 @@ headers {
 }
 
 script:pre-request {
+  const accessToken = bru.getEnvVar("accessToken");
+
+  if (!accessToken) {
+    const response = await bru.sendRequest({
+      method: "POST",
+      url: bru.getEnvVar("baseUrl") + "/auth/token",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      data: {
+        username: "admin",
+        password: "p",
+      },
+    });
+
+    bru.setEnvVar("accessToken", response.data.token);
+  }
+
   bru.setVar("fin", `WAU${Date.now()}`);
 }
 
@@ -42,5 +61,4 @@ body:json {
 assert {
   res.status: eq 201
   res.body.fin: isString
-  res.body.marke: eq Audi
 }

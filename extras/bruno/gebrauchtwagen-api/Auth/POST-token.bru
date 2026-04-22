@@ -22,13 +22,14 @@ body:json {
   }
 }
 
-script:post-response {
-  bru.setEnvVar("accessToken", res.body.token);
-}
-
 assert {
   res.status: eq 200
   res.body.token: isString
   res.body.rollen: isArray
   res.body.rollen[0]: eq ADMIN
+}
+
+script:post-response {
+  const body = res.getBody();
+  bru.setEnvVar("accessToken", body.token);
 }

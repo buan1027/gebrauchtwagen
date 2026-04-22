@@ -117,6 +117,28 @@ def test_create_gebrauchtwagen_rejects_invalid_payload() -> None:
 
 @mark.rest
 @mark.post_request
+def test_create_gebrauchtwagen_rejects_duplicate_fin() -> None:
+    payload = create_payload()
+
+    with TestClient(app) as client:
+        first_response = client.post(
+            "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
+            json=payload,
+        )
+        duplicate_response = client.post(
+            "/gebrauchtwagen",
+            headers=AUTH_HEADERS,
+            json=payload,
+        )
+
+    assert first_response.status_code == HTTPStatus.CREATED
+    assert duplicate_response.status_code == HTTPStatus.CONFLICT
+    assert "FIN WVWZZZ1JZXW000001 existiert bereits" in duplicate_response.text
+
+
+@mark.rest
+@mark.post_request
 def test_create_gebrauchtwagen_requires_bearer_token() -> None:
     with TestClient(app) as client:
         response = client.post(

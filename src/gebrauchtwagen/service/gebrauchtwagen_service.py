@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 
 from gebrauchtwagen.entity import Gebrauchtwagen
 from gebrauchtwagen.entity.dto import (
@@ -38,5 +39,11 @@ def create_gebrauchtwagen(
 ) -> GebrauchtwagenResponseDTO:
     """Erzeuge einen Gebrauchtwagen aus dem Request-DTO."""
     entity = Gebrauchtwagen(**request.model_dump())
-    saved_entity = gebrauchtwagen_repository.create(entity)
+    try:
+        saved_entity = gebrauchtwagen_repository.create(entity)
+    except IntegrityError as err:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Gebrauchtwagen mit FIN {request.fin} existiert bereits.",
+        ) from err
     return GebrauchtwagenResponseDTO.model_validate(saved_entity)
