@@ -50,6 +50,24 @@ Die lokale Datenbank laeuft mit diesen Werten:
 - Benutzer: `gebrauchtwagen`
 - Passwort: `gebrauchtwagen`
 
+## Datenbankschema und Beispieldaten laden
+
+Die SQL- und CSV-Dateien fuer das relationale Zielmodell liegen unter:
+
+`extras\compose\postgres\init\gebrauchtwagen\`
+
+Schema erzeugen:
+
+```powershell
+docker exec gebrauchtwagen-db psql -U gebrauchtwagen -d gebrauchtwagen -v ON_ERROR_STOP=1 -f /init/gebrauchtwagen/sql/create-schema.sql
+```
+
+Beispieldaten reproduzierbar laden:
+
+```powershell
+docker exec gebrauchtwagen-db psql -U gebrauchtwagen -d gebrauchtwagen -v ON_ERROR_STOP=1 -f /init/gebrauchtwagen/sql/load-csv.sql
+```
+
 ## TLS-Dateien vorbereiten
 
 Die Anwendung erwartet lokal zwei Dateien unter:

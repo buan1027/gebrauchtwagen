@@ -9,4 +9,6 @@ Kurze Team-Anleitungen fuer wiederkehrende Entwicklungsablaeufe.
 - [Tests](testing.md)
 - [Bruno Requests](bruno.md)
 - [Keycloak](keycloak.md)
+- [ER-Diagramm](er-diagramm.md)
+- [DB-Coding](db-coding.md)
 - [Troubleshooting](troubleshooting.md)
