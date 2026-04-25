@@ -1,0 +1,65 @@
+' Komponentendiagramm fuer die Gebrauchtwagen-API.
+'
+' Preview in VS Code mit PlantUML-Erweiterung: <Alt>d
+
+@startuml Komponenten
+
+left to right direction
+skinparam linetype ortho
+
+actor RESTClient
+actor GraphQLClient
+actor Admin
+
+node "gebrauchtwagen" {
+  component "auth_router" as AuthRouter
+  component "gebrauchtwagen_router" as GebrauchtwagenRouter
+  component "health_router" as HealthRouter
+  component "graphql_schema" as GraphQLSchema
+
+  component "gebrauchtwagen_service" as GebrauchtwagenService
+  component "gebrauchtwagen_repository" as GebrauchtwagenRepository
+  component "token_service" as TokenService
+  component "seed_loader" as SeedLoader
+}
+
+cloud {
+  component "SQLAlchemy" as SQLAlchemy
+  component "Keycloak" as Keycloak
+}
+
+database "DB gebrauchtwagen" {
+  component "Tabelle gebrauchtwagen" as TabelleGebrauchtwagen
+  component "Tabelle standort" as TabelleStandort
+  component "Tabelle schaden" as TabelleSchaden
+  component "Tabelle hauptuntersuchung" as TabelleHauptuntersuchung
+}
+
+folder "Init-Dateien" {
+  component "DDL" as DDL
+  component "CSV" as CSV
+}
+
+RESTClient --> GebrauchtwagenRouter
+RESTClient --> HealthRouter
+Admin --> AuthRouter
+GraphQLClient --> GraphQLSchema
+
+AuthRouter --> TokenService
+TokenService --> Keycloak
+
+GebrauchtwagenRouter --> GebrauchtwagenService
+GraphQLSchema --> GebrauchtwagenService
+GebrauchtwagenService --> GebrauchtwagenRepository
+GebrauchtwagenRepository --> SQLAlchemy
+
+SeedLoader --> GebrauchtwagenRepository
+DDL --> SQLAlchemy
+CSV --> SQLAlchemy
+
+SQLAlchemy --> TabelleGebrauchtwagen
+SQLAlchemy --> TabelleStandort
+SQLAlchemy --> TabelleSchaden
+SQLAlchemy --> TabelleHauptuntersuchung
+
+@enduml

@@ -1,0 +1,75 @@
+' Schichtenarchitektur fuer die Gebrauchtwagen-API.
+'
+' Preview in VS Code mit PlantUML-Erweiterung: <Alt>d
+
+@startuml Schichtenarchitektur
+
+skinparam linetype ortho
+
+package gebrauchtwagen #DDDDDD {
+  package router #FFFFFF {
+    [auth_router\nPOST /auth/token] as AuthRouter
+    [gebrauchtwagen_router\nGET /gebrauchtwagen\nGET /gebrauchtwagen/{id}\nPOST /gebrauchtwagen] as GebrauchtwagenRouter
+    [health_router\nGET /health] as HealthRouter
+    [root_router\nGET /] as RootRouter
+  }
+
+  package graphql_api #FFFFFF {
+    [schema\nQuery.gebrauchtwagen] as GraphQLSchema
+  }
+
+  package service #FFFFFF {
+    [gebrauchtwagen_service\nlist_gebrauchtwagen()\nget_gebrauchtwagen_by_id()\ncreate_gebrauchtwagen()] as GebrauchtwagenService
+  }
+
+  package repository #FFFFFF {
+    [gebrauchtwagen_repository\nfind_all()\nfind_by_id()\ncreate()] as GebrauchtwagenRepository
+  }
+
+  package security #FFFFFF {
+    [TokenService]
+    [RolesRequired]
+  }
+
+  package entity #FFFFFF {
+    [Gebrauchtwagen]
+    [Standort]
+    [Schaden]
+    [Hauptuntersuchung]
+  }
+
+  package config #FFFFFF {
+    [db]
+    [seed]
+    [settings]
+  }
+}
+
+actor RESTClient
+actor GraphQLClient
+
+RESTClient --> AuthRouter
+RESTClient --> GebrauchtwagenRouter
+RESTClient --> HealthRouter
+GraphQLClient --> GraphQLSchema
+
+AuthRouter --> TokenService
+GebrauchtwagenRouter --> RolesRequired
+GebrauchtwagenRouter --> GebrauchtwagenService
+GraphQLSchema --> GebrauchtwagenService
+GebrauchtwagenService --> GebrauchtwagenRepository
+GebrauchtwagenRepository --> db
+seed --> GebrauchtwagenRepository
+
+GebrauchtwagenRepository ..> Gebrauchtwagen
+Gebrauchtwagen ..> Standort
+Gebrauchtwagen ..> Schaden
+Gebrauchtwagen ..> Hauptuntersuchung
+
+database "PostgreSQL\nSchema gebrauchtwagen" as PostgreSQL
+db --> PostgreSQL
+
+cloud "Keycloak" as Keycloak
+TokenService --> Keycloak
+
+@enduml

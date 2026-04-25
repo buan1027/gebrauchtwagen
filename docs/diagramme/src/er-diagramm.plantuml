@@ -112,4 +112,6 @@ note bottom of Hauptuntersuchung
   ein Fahrzeug hat genau eine aktuelle HU.
 end note
 
+footer Gebrauchtwagen
+
 @enduml

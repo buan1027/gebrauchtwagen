@@ -1,66 +1,36 @@
 # ER-Diagramm
 
-## Ziel
-
 Das ER-Diagramm beschreibt das relationale Zielmodell fuer die
 Gebrauchtwagen-Domaene im PostgreSQL-Schema `gebrauchtwagen`.
 
-Die PlantUML-Quelle liegt unter:
+![ER-Diagramm](diagramme/out/ER Diagramm.svg)
 
-[er-diagramm.plantuml](diagramme/src/er-diagramm.plantuml)
+## Zweck
 
-## Modell
+Das Diagramm zeigt die Tabellen, Enum-Typen und Beziehungen, die fuer die
+Persistenz des Gebrauchtwagen-Aggregats verwendet werden. Es dokumentiert damit
+den Zielzustand, gegen den ORM-Entities, DDL, CSV-Testdaten und
+Integrationstests abgeglichen werden.
 
-```mermaid
-erDiagram
-    GEBRAUCHTWAGEN ||--|| STANDORT : hat
-    GEBRAUCHTWAGEN ||--o{ SCHADEN : dokumentiert
-    GEBRAUCHTWAGEN ||--|| HAUPTUNTERSUCHUNG : hat
+Die PlantUML-Quelle liegt unter
+[er-diagramm.plantuml](diagramme/src/er-diagramm.plantuml).
 
-    GEBRAUCHTWAGEN {
-        integer id PK
-        integer version
-        text fin UK
-        text marke
-        text modell
-        integer baujahr
-        date erstzulassung
-        integer kilometerstand
-        Kraftstoffart kraftstoffart
-        Fahrzeugklasse fahrzeugklasse
-        jsonb ausstattung
-        boolean schadenfrei
-        text beschreibung_url
-        text anbieter_username
-        text kontakt_email
-        timestamp erzeugt
-        timestamp aktualisiert
-    }
+## Relationales Modell
 
-    STANDORT {
-        integer id PK
-        text plz
-        text ort
-        integer gebrauchtwagen_id FK_UK
-    }
+| Tabelle | Aufgabe | Primaere fachliche Merkmale |
+|---|---|---|
+| `gebrauchtwagen.gebrauchtwagen` | Wurzel des Aggregats | FIN, Marke, Modell, Baujahr, Erstzulassung, Kilometerstand, Kraftstoffart, Fahrzeugklasse, Ausstattung, Schadenfreiheit |
+| `gebrauchtwagen.standort` | aktueller Standort eines Fahrzeugs | PLZ und Ort, eindeutig einem Gebrauchtwagen zugeordnet |
+| `gebrauchtwagen.schaden` | dokumentierte Schaeden eines Fahrzeugs | Bezeichnung, Beschreibung und Feststellungsdatum |
+| `gebrauchtwagen.hauptuntersuchung` | aktuelle Hauptuntersuchung eines Fahrzeugs | Pruefdatum, Gueltigkeit, Organisation und Status |
 
-    SCHADEN {
-        integer id PK
-        text bezeichnung
-        text beschreibung
-        date feststellungsdatum
-        integer gebrauchtwagen_id FK
-    }
+## Enum-Typen
 
-    HAUPTUNTERSUCHUNG {
-        integer id PK
-        date pruefdatum
-        date gueltig_bis
-        text prueforganisation
-        HuStatus status
-        integer gebrauchtwagen_id FK_UK
-    }
-```
+| Enum | Werte |
+|---|---|
+| `gebrauchtwagen.kraftstoffart` | `BENZIN`, `DIESEL`, `ELEKTRO`, `HYBRID`, `ERDGAS`, `WASSERSTOFF` |
+| `gebrauchtwagen.fahrzeugklasse` | `KLEINWAGEN`, `KOMPAKTKLASSE`, `MITTELKLASSE`, `OBERKLASSE`, `SUV`, `KOMBI`, `CABRIO`, `TRANSPORTER` |
+| `gebrauchtwagen.hu_status` | `BESTANDEN`, `NICHT_BESTANDEN`, `AUSSTEHEND` |
 
 ## Kardinalitaeten
 
@@ -70,17 +40,32 @@ erDiagram
 | Gebrauchtwagen - Schaden | 1:n | `schaden.gebrauchtwagen_id` ist Foreign Key ohne Unique Constraint |
 | Gebrauchtwagen - Hauptuntersuchung | 1:1 | `hauptuntersuchung.gebrauchtwagen_id` ist Foreign Key und unique |
 
-## Wichtige Constraints
+## Zentrale Constraints
 
-- `gebrauchtwagen.fin` ist eindeutig.
-- Alle Tabellen liegen im Schema `gebrauchtwagen`.
-- Die Enum-Typen `kraftstoffart`, `fahrzeugklasse` und `hu_status` liegen ebenfalls im Schema `gebrauchtwagen`.
-- `version` ist im ORM als `version_id_col` hinterlegt und bildet die Grundlage fuer optimistische Synchronisation.
-- `anbieter_username` und `kontakt_email` erweitern das urspruengliche Zielmodell, damit objektbezogene Zugriffskontrolle und fachliche Kontaktzuordnung spaeter darstellbar sind.
+- `gebrauchtwagen.fin` ist eindeutig und bildet die fachliche Fahrzeugkennung.
+- Alle Tabellen und Enum-Typen liegen im Schema `gebrauchtwagen`.
+- `version` ist im ORM als `version_id_col` hinterlegt und bildet die
+  Grundlage fuer optimistische Synchronisation.
+- `standort.gebrauchtwagen_id` und `hauptuntersuchung.gebrauchtwagen_id`
+  erzwingen jeweils genau eine aktuelle Zuordnung pro Fahrzeug.
+- `schaden.gebrauchtwagen_id` erlaubt mehrere dokumentierte Schaeden pro
+  Fahrzeug.
 
-## DDL-Bezug
+## Fachliche Ergaenzungen
 
-Die SQL-Umsetzung ist hier dokumentiert:
+Das urspruengliche Zielmodell wurde um `anbieter_username` und `kontakt_email`
+erweitert. Damit bleiben spaetere fachliche Anforderungen an objektbezogene
+Zugriffskontrolle und Kontaktzuordnung im relationalen Modell darstellbar,
+ohne eine eigene Benutzer- oder Anbieter-Tabelle vorwegzunehmen.
+
+## Umsetzung
+
+Die SQL-Umsetzung ist ueber die PostgreSQL-Initialisierung nachvollziehbar:
 
 - `extras/compose/postgres/init/gebrauchtwagen/sql/create-schema.sql`
 - `extras/compose/postgres/init/gebrauchtwagen/sql/load-csv.sql`
+
+Die dazugehoerigen CSV-Dateien liefern reproduzierbare Beispieldaten fuer alle
+Tabellen. `load-csv.sql` leert die Tabellen vor dem Laden mit
+`TRUNCATE ... RESTART IDENTITY CASCADE`, damit ein erneuter Ladebefehl denselben
+Datenbestand wiederherstellt.

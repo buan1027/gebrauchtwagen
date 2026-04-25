@@ -1,0 +1,3 @@
+# Geschäftsobjekte
+
+::: gebrauchtwagen.entity
