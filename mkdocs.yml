@@ -1,0 +1,27 @@
+site_name: gebrauchtwagen
+
+nav:
+  - Start: README.md
+  - Lokales Setup: local-setup.md
+  - Tests: testing.md
+  - Bruno Requests: bruno.md
+  - Keycloak: keycloak.md
+  - ER-Diagramm: er-diagramm.md
+  - DB-Coding: db-coding.md
+  - Dependency-Check: dependency-check.md
+  - Git-Workflow: git-workflow.md
+  - Troubleshooting: troubleshooting.md
+
+theme:
+  name: mkdocs
+  language: de
+
+markdown_extensions:
+  - toc:
+      permalink: true
+
+watch:
+  - docs
+  - mkdocs.yml
+
+strict: true
