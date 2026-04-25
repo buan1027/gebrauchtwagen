@@ -31,10 +31,10 @@ class Gebrauchtwagen(Base):
     baujahr: Mapped[int]
     kilometerstand: Mapped[int]
     kraftstoffart: Mapped[Kraftstoffart] = mapped_column(
-        SAEnum(Kraftstoffart, name="kraftstoffart")
+        SAEnum(Kraftstoffart, name="kraftstoffart", inherit_schema=True)
     )
     fahrzeugklasse: Mapped[Fahrzeugklasse] = mapped_column(
-        SAEnum(Fahrzeugklasse, name="fahrzeugklasse")
+        SAEnum(Fahrzeugklasse, name="fahrzeugklasse", inherit_schema=True)
     )
     erstzulassung: Mapped[date]
     schadenfrei: Mapped[bool]

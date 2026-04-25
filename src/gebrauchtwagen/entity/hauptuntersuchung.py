@@ -9,7 +9,7 @@ from sqlalchemy import Enum as SAEnum
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base
+from .base import DB_SCHEMA, Base
 from .enums import HuStatus
 
 if TYPE_CHECKING:
@@ -23,14 +23,14 @@ class Hauptuntersuchung(Base):
 
     id: Mapped[int] = mapped_column(init=False, primary_key=True)
     gebrauchtwagen_id: Mapped[int] = mapped_column(
-        ForeignKey("gebrauchtwagen.id", ondelete="CASCADE"),
+        ForeignKey(f"{DB_SCHEMA}.gebrauchtwagen.id", ondelete="CASCADE"),
         unique=True,
     )
     pruefdatum: Mapped[date]
     gueltig_bis: Mapped[date]
     prueforganisation: Mapped[str] = mapped_column(String(100))
     status: Mapped[HuStatus] = mapped_column(
-        SAEnum(HuStatus, name="hu_status")
+        SAEnum(HuStatus, name="hu_status", inherit_schema=True)
     )
 
     gebrauchtwagen: Mapped[Gebrauchtwagen] = relationship(

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 import gebrauchtwagen.entity  # noqa: F401
 from gebrauchtwagen.config.settings import load_settings
-from gebrauchtwagen.entity import Base
+from gebrauchtwagen.entity import DB_SCHEMA, Base
 
 settings = load_settings()
 
@@ -42,6 +42,8 @@ def get_session() -> Session:
 
 def create_tables() -> None:
     """Erzeuge alle registrierten Tabellen."""
+    with engine.begin() as connection:
+        connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {DB_SCHEMA}"))
     Base.metadata.create_all(bind=engine)
 
 
