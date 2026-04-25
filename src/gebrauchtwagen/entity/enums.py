@@ -27,3 +27,11 @@ class Fahrzeugklasse(enum.StrEnum):
     KOMBI = "KOMBI"
     CABRIO = "CABRIO"
     TRANSPORTER = "TRANSPORTER"
+
+
+class HuStatus(enum.StrEnum):
+    """Status einer Hauptuntersuchung."""
+
+    BESTANDEN = "BESTANDEN"
+    NICHT_BESTANDEN = "NICHT_BESTANDEN"
+    AUSSTEHEND = "AUSSTEHEND"

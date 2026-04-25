@@ -40,14 +40,20 @@ class Gebrauchtwagen(Base):
     schadenfrei: Mapped[bool]
     ausstattung: Mapped[dict] = mapped_column(JSONB, default_factory=dict)
     beschreibung_url: Mapped[str | None] = mapped_column(String(255), default=None)
+    anbieter_username: Mapped[str | None] = mapped_column(String(100), default=None)
+    kontakt_email: Mapped[str | None] = mapped_column(String(255), default=None)
     erzeugt: Mapped[datetime] = mapped_column(init=False, server_default=func.now())
     aktualisiert: Mapped[datetime] = mapped_column(
         init=False, server_default=func.now(), onupdate=func.now()
     )
     version: Mapped[int] = mapped_column(default=1)
+    __mapper_args__ = {"version_id_col": version}
 
     standort: Mapped[Standort | None] = relationship(
-        back_populates="gebrauchtwagen", uselist=False, init=False
+        back_populates="gebrauchtwagen",
+        cascade="all, delete-orphan",
+        uselist=False,
+        init=False,
     )
     schaeden: Mapped[list[Schaden]] = relationship(
         back_populates="gebrauchtwagen",

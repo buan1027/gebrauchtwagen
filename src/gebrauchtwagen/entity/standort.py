@@ -23,8 +23,8 @@ class Standort(Base):
         ForeignKey("gebrauchtwagen.id", ondelete="CASCADE"),
         unique=True,
     )
-    name: Mapped[str] = mapped_column(String(100))
-    stadt: Mapped[str] = mapped_column(String(100))
+    plz: Mapped[str] = mapped_column(String(10))
+    ort: Mapped[str] = mapped_column(String(100))
 
     gebrauchtwagen: Mapped[Gebrauchtwagen] = relationship(
         back_populates="standort", init=False
