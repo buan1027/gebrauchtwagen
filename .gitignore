@@ -122,3 +122,9 @@ coverage
 
 /generated/prisma
 /src/generated/prisma
+
+# Lokale Build-Artefakte der README-Skripte
+beispiele.exe
+beispiele-write.exe
+beispiele.js.map
+beispiele-write.js.map
