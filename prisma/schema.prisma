@@ -24,7 +24,6 @@ generator client {
 /// https://www.prisma.io/docs/orm/reference/prisma-schema-reference#datasource
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
   schemas  = ["gebrauchtwagen"]
 }
 
