@@ -1,0 +1,34 @@
+meta {
+  name: POST gebrauchtwagen ungueltige Daten
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/gebrauchtwagen
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "fin": "",
+    "marke": "  ",
+    "baujahr": 1800,
+    "kilometerstand": -10,
+    "kraftstoffart": "WASSER",
+    "fahrzeugklasse": "FAMILIE",
+    "ausstattung": []
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.detail: isArray
+}

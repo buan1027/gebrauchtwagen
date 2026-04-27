@@ -1,5 +1,42 @@
 # https://git-scm.com/docs/gitignore#_pattern_format
 
+__pycache__/
+.venv
+.venv_*/
+.tmp/
+.uv-cache/
+.pytest_cache
+.ruff_cache
+.vscode
+
+build/
+dist
+docs/build
+docs/diagramme/out
+htmlcov
+log
+site
+extras/**/__pycache__
+src/gebrauchtwagen/**/__pycache__
+src/gebrauchtwagen/gebrauchtwagen.egg-info
+tests/**/__pycache__
+
+.coverage
+report.html
+dependency-check-report.html
+reports/dependency-check/
+
+*.pyc
+*.xlsx
+*.egg-info/
+
+.env
+sonar-project.properties
+
+src/gebrauchtwagen/config/resources/tls/*.pem
+src/gebrauchtwagen/config/resources/tls/*.crt
+src/gebrauchtwagen/config/resources/tls/*.key
+
 # compiled output
 dist
 
@@ -84,5 +121,4 @@ coverage
 !.vscode/extensions.json
 
 /generated/prisma
-
 /src/generated/prisma

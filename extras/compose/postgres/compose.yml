@@ -1,6 +1,5 @@
 # Aufruf:   docker compose up
 #           docker compose down
-
 name: gebrauchtwagen
 
 services:

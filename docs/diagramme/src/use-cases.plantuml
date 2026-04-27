@@ -1,0 +1,30 @@
+' Use Cases fuer die Gebrauchtwagen-API.
+'
+' Preview in VS Code mit PlantUML-Erweiterung: <Alt>d
+
+@startuml Use Cases
+
+left to right direction
+
+actor Gast
+actor Admin
+actor "REST-Client" as RESTClient
+actor "GraphQL-Client" as GraphQLClient
+
+rectangle gebrauchtwagen {
+  Gast --> (Gebrauchtwagen suchen)
+  Gast --> (Gebrauchtwagen nach ID lesen)
+  Gast --> (GraphQL-Abfrage ausfuehren)
+
+  Admin --> (Token abrufen)
+  Admin --> (Gebrauchtwagen anlegen)
+  Admin --> (Beispieldaten laden)
+
+  RESTClient --> (Gebrauchtwagen suchen)
+  RESTClient --> (Gebrauchtwagen nach ID lesen)
+  RESTClient --> (Gebrauchtwagen anlegen)
+
+  GraphQLClient --> (GraphQL-Abfrage ausfuehren)
+}
+
+@enduml

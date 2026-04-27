@@ -1,0 +1,36 @@
+meta {
+  name: POST gebrauchtwagen ohne Token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/gebrauchtwagen
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "fin": "WAUZZZF3XMN900102",
+    "marke": "Audi",
+    "modell": "A3",
+    "baujahr": 2021,
+    "kilometerstand": 25000,
+    "kraftstoffart": "BENZIN",
+    "fahrzeugklasse": "KOMPAKTKLASSE",
+    "ausstattung": {},
+    "erstzulassung": "2021-03-15",
+    "schadenfrei": true,
+    "beschreibung_url": null
+  }
+}
+
+assert {
+  res.status: eq 401
+}

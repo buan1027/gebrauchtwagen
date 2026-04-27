@@ -1,0 +1,64 @@
+meta {
+  name: POST gebrauchtwagen als Admin
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/gebrauchtwagen
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+script:pre-request {
+  const accessToken = bru.getEnvVar("accessToken");
+
+  if (!accessToken) {
+    const response = await bru.sendRequest({
+      method: "POST",
+      url: bru.getEnvVar("baseUrl") + "/auth/token",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      data: {
+        username: "admin",
+        password: "p",
+      },
+    });
+
+    bru.setEnvVar("accessToken", response.data.token);
+  }
+
+  bru.setVar("fin", `WAU${Date.now()}`);
+}
+
+body:json {
+  {
+    "fin": "{{fin}}",
+    "marke": "Audi",
+    "modell": "A3",
+    "baujahr": 2021,
+    "kilometerstand": 25000,
+    "kraftstoffart": "BENZIN",
+    "fahrzeugklasse": "KOMPAKTKLASSE",
+    "ausstattung": {
+      "navi": true,
+      "sitzheizung": true
+    },
+    "erstzulassung": "2021-03-15",
+    "schadenfrei": true,
+    "beschreibung_url": "https://beispiel.de/fahrzeuge/a3"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.fin: isString
+}

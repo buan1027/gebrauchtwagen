@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Suppressions fuer OWASP Dependency-Check.
+
+  Diese Datei bleibt bewusst leer, solange es keine fachlich geprueften
+  False Positives gibt. Jede spaetere Suppression soll mit Notiz, CVE und
+  betroffenem Package nachvollziehbar begruendet werden.
+
+  Dokumentation:
+  https://dependency-check.github.io/DependencyCheck/general/suppression.html
+-->
+
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd" />
