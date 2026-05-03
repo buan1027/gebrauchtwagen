@@ -22,7 +22,7 @@
   },
   "overrides": {
     "@hono/node-server": "1.19.14",
-    "hono": "4.12.14",
+    "hono": "4.12.16",
     "lodash": "4.17.23"
   },
   "dependencies": {
@@ -30,7 +30,7 @@
     "@prisma/client": "7.8.0",
     "@prisma/sqlcommenter-query-insights": "7.8.0",
     "dotenv": "17.4.2",
-    "hono": "4.12.14",
+    "hono": "4.12.16",
     "pg": "8.20.0"
   },
   "devDependencies": {
